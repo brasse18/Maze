@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -22,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import model.Menu;
 //import model.Game;
@@ -47,8 +49,9 @@ public class Frame extends JFrame implements KeyListener
 	
 	BufferedImage bufferWall;
 	BufferedImage bufferGround;
+	BufferedImage bufferGoal;
 	BufferedImage bufferPlayer;
-	BufferedImage bufferEnemy = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);;
+	BufferedImage bufferEnemy;
 	BufferedImage bufferMpc;
 	
 	private Game game;
@@ -141,6 +144,10 @@ public class Frame extends JFrame implements KeyListener
 			} else if (objekt.getClass() == Ground.class) 
 			{
 				setIcon(new ImageIcon(bufferGround.getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
+			} else if (objekt.getClass() == Goal.class) 
+			{
+				System.out.println("Goal");
+				setIcon(new ImageIcon(bufferGoal.getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
 			}
 			setId("MapX" + objekt.getPosition().getX() + "Y" + objekt.getPosition().getY());
 		}
@@ -200,8 +207,8 @@ public class Frame extends JFrame implements KeyListener
 		
 		try {
 			bufferWall = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/wall.png"));
-			
 			bufferGround = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/ground.jpg"));
+			bufferGoal = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/stairs.png"));
 			bufferPlayer = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/player.jpg"));
 			bufferEnemy = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/enemy.png"));
 			bufferMpc = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/mpc.png"));
@@ -217,7 +224,7 @@ public class Frame extends JFrame implements KeyListener
 	
 	public void configFrame(String name)
 	{
-		this.setSize(600, 600);
+		this.setSize(700, 700);
 		this.setTitle(name);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.addKeyListener(this);
@@ -229,7 +236,7 @@ public class Frame extends JFrame implements KeyListener
 		panelFrame.setBackground(Color.BLUE);
 		
 		panelGame.setBackground(Color.RED);
-		panelGame.setSize(600, 600);
+		panelGame.setSize(700, 700);
 		panelGame.addKeyListener(this);
 		panelGame.setLayout(null);
 		
@@ -286,6 +293,8 @@ public class Frame extends JFrame implements KeyListener
 		panelGame.add(GUIPlayer);
 		
 		JMapObjekt mapBlock;
+		mapBlock = new JMapObjekt(map.getGoal());
+		panelGame.add(mapBlock);
 		for (int y = 0;y<game.gameRound.map.getBody().size.height;y++)
 		{
 			for (int x = 0;x<game.gameRound.map.getBody().size.width;x++)
@@ -386,6 +395,12 @@ public class Frame extends JFrame implements KeyListener
 				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
 			}
 				break;
+			case goal:
+			{
+				System.out.println("You have reast the goal!!!");
+				updatePlayer(panelGame);
+			}
+				break;
 
 			default:
 				break;
@@ -413,6 +428,12 @@ public class Frame extends JFrame implements KeyListener
 			{
 				System.out.println("Cant move Right you attackt a enemy");
 				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
+			}
+				break;
+			case goal:
+			{
+				System.out.println("You have reast the goal!!!");
+				updatePlayer(panelGame);
 			}
 				break;
 
@@ -444,6 +465,12 @@ public class Frame extends JFrame implements KeyListener
 				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
 			}
 				break;
+			case goal:
+			{
+				System.out.println("You have reast the goal!!!");
+				updatePlayer(panelGame);
+			}
+				break;
 
 			default:
 				break;
@@ -471,6 +498,12 @@ public class Frame extends JFrame implements KeyListener
 			{
 				System.out.println("Cant move Down you attackt a enemy");
 				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
+			}
+				break;
+			case goal:
+			{
+				System.out.println("You have reast the goal!!!");
+				updatePlayer(panelGame);
 			}
 				break;
 

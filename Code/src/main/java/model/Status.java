@@ -1,6 +1,6 @@
 package model;
 
 public enum Status {
-	Move, Block, Fight;
+	Move, Block, Fight, goal;
 
 }

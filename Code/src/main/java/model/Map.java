@@ -12,6 +12,7 @@ public class Map
 {
 	private Vector2d body = new Vector2d(0,0,10,10);
 	private MapObjekt[][] map = new MapObjekt[body.size.width][body.size.height];
+	private MapObjekt goal = new Goal(new Point(8, 8));
 	private ArrayList<Enhet> enheter = new ArrayList<Enhet>();
 	private Enhet player = new Player();
 	private Dimension blockSize = new Dimension(70, 70);
@@ -54,6 +55,11 @@ public class Map
 			enheter.add(enhet);
 			map[enhet.getPosition().x][enhet.getPosition().y].addEnhet(enhet);
 		}
+	}
+	
+	public MapObjekt getGoal()
+	{
+		return goal;
 	}
 	
 	public Enhet getPlayer()
@@ -140,6 +146,17 @@ public class Map
 		return outOfMap;
 	}
 	
+	public boolean isOnGoal(Point position)
+	{
+		boolean isOnGoal = false;
+		if (goal.getPosition().x == position.x && goal.getPosition().y == position.y)
+		{
+			isOnGoal = true;
+		}
+		
+		return isOnGoal;
+	}
+	
 	public Status moveEnhet(Enhet enhet, Direction direction) {
 		Status status = Status.Move;
 		Point nextStep = getNextStep(enhet, direction);
@@ -148,7 +165,11 @@ public class Map
 		{
 			
 		} else {
-			if (!isPositionOutOfMap(nextStep))
+			if (isOnGoal(nextStep))
+			{
+				status = Status.goal;
+				enhet.move(direction);
+			} else if (!isPositionOutOfMap(nextStep))
 			{
 				if (!map[nextStep.x][nextStep.y].isBlocking())
 				{
@@ -159,14 +180,17 @@ public class Map
 							enhet.attack(map[nextStep.x][nextStep.y].getEnhetAt(0));
 							status = Status.Fight;
 						}
-					} else {
+					} else 
+					{
 						enhet.move(direction);
 					}
 					
-				} else {
+				} else 
+				{
 					status = Status.Block;
 				}
-			} else {
+			} else 
+			{
 				status = Status.Block;
 			}
 		}
