@@ -1,11 +1,20 @@
 package model;
 
+import java.awt.Point;
+
 import model.Enhet;
 
 public class Enemy extends Enhet
 {
 	public Enemy(){
 		super();
+		setImage(Objekt.Enemy);
+	}
+	
+	public Enemy(Point position)
+	{
+		super(position);
+		
 	}
 
 	@Override

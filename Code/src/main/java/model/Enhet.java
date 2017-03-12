@@ -55,11 +55,21 @@ public abstract class Enhet extends Form
 			break;
 		}
 	}
+	
+	public void takeDamage(int damage)
+	{
+		healthPoint = healthPoint - damage;
+		System.out.println(damage + " damage was taken" + getHealthPoint() + " HP left");
+	}
 
 	public int getHealthPoint() {
 		return healthPoint;
 	}
-
+	
+	public String getInfoToString()
+	{
+		return "HP: " + getHealthPoint() + " DM: " + getDamage();
+	}
 	
 	public int getMovementSpeed() {
 		return movementSpeed;
@@ -68,6 +78,12 @@ public abstract class Enhet extends Form
 	
 	public int getDamage() {
 		return damage;
+	}
+	
+	public void attack(Enhet enhet)
+	{
+		enhet.takeDamage(getDamage());
+		System.out.println("Attackt Enemy");
 	}
 
 	

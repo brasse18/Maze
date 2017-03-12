@@ -6,23 +6,36 @@ import java.util.ArrayList;
 public class MapObjekt extends Form
 {
 
-	private ArrayList<Direction> blocking = new ArrayList<Direction>();
+	//private ArrayList<Direction> blocking = new ArrayList<Direction>();
+	private boolean blocking = false;
 	private ArrayList<Enhet> enheter = new ArrayList<Enhet>();
 	private ArrayList<Item> items = new ArrayList<Item>();
 	
-	public int getNrOfBlocking()
+	public boolean isBlocking()
 	{
-		return blocking.size();
+		return blocking;
 	}
 	
-	public boolean isBlocking(Direction direction)
+	public void setBlocking(boolean blocking)
 	{
-		return blocking.contains(direction);
+		this.blocking = blocking;
 	}
 	
 	public int getNrOfEnheter()
 	{
+		System.out.println(enheter.size());
 		return enheter.size();
+	}
+	
+	public Enhet getEnhetAt(int index)
+	{
+		
+		return enheter.get(index);
+	}
+	
+	public void addEnhet(Enhet enhet)
+	{
+		enheter.add(enhet);
 	}
 	
 	public boolean isEnheter(Enhet enhet)

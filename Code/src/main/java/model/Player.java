@@ -6,10 +6,11 @@ import model.Enhet;
 
 public class Player extends Enhet
 {
-
+	
 	public Player(){
 		super();
 		this.setPosition(new Point(1, 1));
+		setImage(Objekt.Player);
 	}
 
 	@Override

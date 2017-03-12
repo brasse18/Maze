@@ -7,7 +7,6 @@ public class Button
 
 	private String label;
 	private Vector2d body;
-	
 
 	public Button(String label, Vector2d body){
 		super();

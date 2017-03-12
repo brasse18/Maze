@@ -3,6 +3,10 @@ package model;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -40,11 +44,24 @@ public class Frame extends JFrame implements KeyListener
 	//private JPanel panelMenuPause = new JPanel();
 	private JPanel panelGame = new JPanel();
 	private JPanel panelFrame = new JPanel();
-	private Game game = new Game();
+	
+	BufferedImage bufferWall;
+	BufferedImage bufferGround;
+	BufferedImage bufferPlayer;
+	BufferedImage bufferEnemy = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);;
+	BufferedImage bufferMpc;
+	
+	private Game game;
+	
 	
 	private class JEnhet extends JLabel
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private String id;
+		private Point position;
 		
 		public void setId(String id)
 		{
@@ -56,35 +73,51 @@ public class Frame extends JFrame implements KeyListener
 			return id;
 		}
 		
+		public void setPosition(Point position)
+		{
+			this.position = position;
+		}
+		
+		public Point getPosition()
+		{
+			return position;
+		}
+		
 		public JEnhet(Enhet enhet)
 		{
-			BufferedImage myPicture;
-			String image = "/home/brasse/Projekt/Maze/image/player.jpg";
 			Dimension blockSize = game.gameRound.map.getBlockSize();
-			if (enhet.getClass() == Player.class)
+			setHorizontalTextPosition(JLabel.CENTER);
+			setVerticalTextPosition(JLabel.BOTTOM);
+			setFont(new Font(getFont().getName(), Font.BOLD, 15));
+			setForeground(Color.BLUE);
+			setPosition(enhet.getPosition());
+			if (enhet.getClass() == Enemy.class)
 			{
-				image = "/home/brasse/Projekt/Maze/image/player.jpg";
-				setText("Player");
-				setId("Player");
-			} else if (enhet.getClass() == Enemy.class) {
-				image = "/home/brasse/Projekt/Maze/image/enemy.jpg";
-				setText("Enemy");
+				setIcon(new ImageIcon(bufferEnemy.getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+				setText("HP: " + enhet.getHealthPoint());
 				setId("Enemy");
+			} else if (enhet.getClass() == Player.class) 
+			{
+				setIcon(new ImageIcon(bufferPlayer.getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+				setText("HP: " + enhet.getHealthPoint());
+				setId("Player");
+			} else if (enhet.getClass() == Mpc.class) {
+				setIcon(new ImageIcon(bufferMpc.getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+				setId("MpcX" + enhet.getPosition().getX() + "Y" + enhet.getPosition().getY());
 			}
 			setLocation(blockSize.width*enhet.getPosition().x, blockSize.height*enhet.getPosition().y);
 			setSize(enhet.getSize().width*blockSize.width, enhet.getSize().height*blockSize.height);
-			try {
-				myPicture = ImageIO.read(new File(image));
-				setIcon(new ImageIcon(myPicture));
-			} catch (IOException e) {
-				System.out.println("Cant loade image " + image);
-				e.printStackTrace();
-			}
 		}
 	}
 	
+	
+	
 	private class JMapObjekt extends JLabel
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private String id;
 		
 		public void setId(String id)
@@ -98,19 +131,18 @@ public class Frame extends JFrame implements KeyListener
 		}
 		
 		public JMapObjekt(MapObjekt objekt) {
-			BufferedImage myPicture;
-			String image = "/home/brasse/Projekt/Maze/image/ground.jpg";
 			Dimension blockSize = game.gameRound.map.getBlockSize();
 			setLocation(blockSize.width*objekt.getPosition().x, blockSize.height*objekt.getPosition().y);
 			setSize(objekt.getSize().width*blockSize.width, objekt.getSize().height*blockSize.height);
-			setId("MapX" + objekt.getPosition().getX() + "Y" + objekt.getPosition().getY());
-			try {
-				myPicture = ImageIO.read(new File(image));
-				setIcon(new ImageIcon(myPicture));
-			} catch (IOException e) {
-				System.out.println("Cant loade image " + image);
-				e.printStackTrace();
+			
+			if (objekt.getClass() == Wall.class)
+			{
+				setIcon(new ImageIcon(bufferWall.getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
+			} else if (objekt.getClass() == Ground.class) 
+			{
+				setIcon(new ImageIcon(bufferGround.getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
 			}
+			setId("MapX" + objekt.getPosition().getX() + "Y" + objekt.getPosition().getY());
 		}
 	}
 	
@@ -149,6 +181,8 @@ public class Frame extends JFrame implements KeyListener
 
 	public Frame(String name){
 		super();
+		this.game = new Game();
+		loadImageBuffer();
 		menuGame.addButton(new Button("Start", new Vector2d(0, 0, 300, 50)));
 		menuGame.addButton(new Button("Option", new Vector2d(0, 60, 100, 50)));
 		menuGame.addButton(new Button("Exit", new Vector2d(0, 120, 100, 50)));
@@ -161,6 +195,26 @@ public class Frame extends JFrame implements KeyListener
 		configFrame(name);
 	}
 	
+	private void loadImageBuffer()
+	{
+		
+		try {
+			bufferWall = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/wall.png"));
+			
+			bufferGround = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/ground.jpg"));
+			bufferPlayer = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/player.jpg"));
+			bufferEnemy = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/enemy.png"));
+			bufferMpc = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/mpc.png"));
+			
+			
+			
+		} catch (IOException e) {
+			System.out.println("Cant loade images");
+			e.printStackTrace();
+		}
+	
+	}
+	
 	public void configFrame(String name)
 	{
 		this.setSize(600, 600);
@@ -169,14 +223,13 @@ public class Frame extends JFrame implements KeyListener
 		this.addKeyListener(this);
 		this.setFocusable(true);
 		
-		
 		panelGame.setVisible(false);
 		panelMenuOption.setVisible(false);
 		
 		panelFrame.setBackground(Color.BLUE);
 		
 		panelGame.setBackground(Color.RED);
-		panelGame.setSize(600, 400);
+		panelGame.setSize(600, 600);
 		panelGame.addKeyListener(this);
 		panelGame.setLayout(null);
 		
@@ -188,17 +241,14 @@ public class Frame extends JFrame implements KeyListener
 		panelMenuGame.setLayout(new BoxLayout(panelMenuGame, BoxLayout.Y_AXIS));
 		panelMenuGame.setBounds(menuGame.body.position.x, menuGame.body.position.y, menuGame.body.size.width, this.getSize().height);
 		
-		
 		panelFrame.add(panelMenuGame);
 		panelFrame.add(panelMenuOption);
 		panelFrame.add(panelGame);
 		panelFrame.setLayout(null);
 		
-		
 		loadMenu(menuGame, panelMenuGame);
 		loadMenu(menuOptions, panelMenuOption);
 		//loadGame(game, panelGame);
-		
 		
 		this.add(panelFrame);
 		
@@ -231,21 +281,54 @@ public class Frame extends JFrame implements KeyListener
 		Enhet player = game.gameRound.map.getPlayer();
 		Map map = game.gameRound.map;
 		
-		JEnhet JPlayer = new JEnhet(player);
-		panelGame.add(JPlayer);
+		JEnhet GUIPlayer = new JEnhet(player);
+		JEnhet GUIEnhet;
+		panelGame.add(GUIPlayer);
 		
 		JMapObjekt mapBlock;
 		for (int y = 0;y<game.gameRound.map.getBody().size.height;y++)
 		{
 			for (int x = 0;x<game.gameRound.map.getBody().size.width;x++)
 			{
-				mapBlock = new JMapObjekt(map.getMap().get(x).get(y));
+				mapBlock = new JMapObjekt(map.getMap()[x][y]);
+				//System.out.println(map.getMap()[x][y].getNrOfEnheter());
+				if (map.getMap()[x][y].getNrOfEnheter() != 0)
+				{
+					for (int i = 0;i<map.getMap()[x][y].getNrOfEnheter();i++)
+					{
+						GUIEnhet = new JEnhet(map.getMap()[x][y].getEnhetAt(i));
+						panelGame.add(GUIEnhet);
+					}
+				}
 				panelGame.add(mapBlock);
 			}
 		}
 	}
 	
-	public void updateGui(JPanel panel, String name)
+	public void updateGui(JPanel panel, String name, Point position)
+	{
+		Map map = game.gameRound.map;
+		for (int i = 0;i<panel.getComponents().length;i++)
+		{
+			if (panel.getComponent(i).getClass() == JEnhet.class)
+			{
+				JEnhet temp = (JEnhet) panel.getComponent(i);
+				if (temp.getId() == name)
+				{
+					if (position.x == temp.getPosition().x && position.y == temp.getPosition().y)
+					{
+						Enhet enhet = map.getEnheter(position);
+						Dimension blockSize = game.gameRound.map.getBlockSize();
+						temp.setLocation(blockSize.width*enhet.getPosition().x, blockSize.height*enhet.getPosition().y);
+						temp.setText("HP: " + enhet.getHealthPoint());
+					}
+
+				}
+			}
+		}
+	}
+	
+	public void updatePlayer(JPanel panel)
 	{
 		for (int i = 0;i<panel.getComponents().length;i++)
 		{
@@ -253,12 +336,12 @@ public class Frame extends JFrame implements KeyListener
 			if (panel.getComponent(i).getClass() == JEnhet.class)
 			{
 				JEnhet temp = (JEnhet) panel.getComponent(i);
-				System.out.println(temp.getId());
-				if (temp.getId() == name)
+				if (temp.getId() == "Player")
 				{
 					Enhet player = game.gameRound.map.getPlayer();
 					Dimension blockSize = game.gameRound.map.getBlockSize();
 					temp.setLocation(blockSize.width*player.getPosition().x, blockSize.height*player.getPosition().y);
+					temp.setText("HP: " + player.getHealthPoint());
 				}
 			}
 		}
@@ -274,29 +357,128 @@ public class Frame extends JFrame implements KeyListener
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
-
+		Enhet player = game.gameRound.map.getPlayer();
+		Map map = game.gameRound.map;
+		
+	    if (key == KeyEvent.VK_ESCAPE) {
+	        System.out.println("Pause Game");
+	        panelMenuGame.setVisible(true);
+	    }
+		
 	    if (key == KeyEvent.VK_LEFT) {
-	        System.out.println("Move Left");
-	        game.gameRound.map.getPlayer().move(Direction.left);
-	        updateGui(panelGame, "Player");
+	        System.out.println("Try to move Left");
+	        Direction direction = Direction.left;
+	        switch (map.moveEnhet(player, direction)) {
+			case Move:
+			{
+				System.out.println("Moved Left");
+				updatePlayer(panelGame);
+			}
+				break;
+			case Block:
+			{
+				System.out.println("Cant move Left");
+			}
+				break;
+			case Fight:
+			{
+				System.out.println("Cant move Left you attackt a enemy");
+				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
+			}
+				break;
+
+			default:
+				break;
+			}
+
+	        
 	    }
 
 	    if (key == KeyEvent.VK_RIGHT) {
-	    	System.out.println("Move Right");
-	        game.gameRound.map.getPlayer().move(Direction.right);
-	        updateGui(panelGame, "Player");
+	    	System.out.println("Try to move Right");
+	    	Direction direction = Direction.right;
+	        switch (map.moveEnhet(player, direction)) {
+			case Move:
+			{
+				System.out.println("Moved Right");
+				updatePlayer(panelGame);
+			}
+				break;
+			case Block:
+			{
+				System.out.println("Cant move Right");
+			}
+				break;
+			case Fight:
+			{
+				System.out.println("Cant move Right you attackt a enemy");
+				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
+			}
+				break;
+
+			default:
+				break;
+			}
+
+	        
 	    }
 
 	    if (key == KeyEvent.VK_UP) {
-	    	System.out.println("Move Up");
-	        game.gameRound.map.getPlayer().move(Direction.up);
-	        updateGui(panelGame, "Player");
+	    	System.out.println("Try to move Up");
+	    	Direction direction = Direction.up;
+	        switch (map.moveEnhet(player, direction)) {
+			case Move:
+			{
+				System.out.println("Moved Up");
+				updatePlayer(panelGame);
+			}
+				break;
+			case Block:
+			{
+				System.out.println("Cant move Up");
+			}
+				break;
+			case Fight:
+			{
+				System.out.println("Cant move Up you attackt a enemy");
+				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
+			}
+				break;
+
+			default:
+				break;
+			}
+	    	
+	        
 	    }
 
 	    if (key == KeyEvent.VK_DOWN) {
-	    	System.out.println("Move Down");
-	        game.gameRound.map.getPlayer().move(Direction.down);
-	        updateGui(panelGame, "Player");
+	    	System.out.println("Try to move Down");
+	    	Direction direction = Direction.down;
+	        switch (map.moveEnhet(player, direction)) {
+			case Move:
+			{
+				System.out.println("Moved Down");
+				updatePlayer(panelGame);
+			}
+				break;
+			case Block:
+			{
+				System.out.println("Cant move Down");
+			}
+				break;
+			case Fight:
+			{
+				System.out.println("Cant move Down you attackt a enemy");
+				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
+			}
+				break;
+
+			default:
+				break;
+			}
+
+	        
 	    }
 		
 	}
