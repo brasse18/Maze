@@ -53,6 +53,7 @@ public class Frame extends JFrame implements KeyListener
 	BufferedImage bufferPlayer;
 	BufferedImage bufferEnemy;
 	BufferedImage bufferMpc;
+	BufferedImage bufferEnhet;
 	
 	private Game game;
 	
@@ -96,16 +97,19 @@ public class Frame extends JFrame implements KeyListener
 			setPosition(enhet.getPosition());
 			if (enhet.getClass() == Enemy.class)
 			{
-				setIcon(new ImageIcon(bufferEnemy.getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+				//setIcon(new ImageIcon(bufferEnemy.getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+				setIcon(new ImageIcon(bufferEnhet.getSubimage(160*3, 136*2, 160, 136).getScaledInstance(blockSize.width-10, blockSize.height-10, Image.SCALE_SMOOTH)));
 				setText("HP: " + enhet.getHealthPoint());
 				setId("Enemy");
 			} else if (enhet.getClass() == Player.class) 
 			{
-				setIcon(new ImageIcon(bufferPlayer.getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+				setIcon(new ImageIcon(bufferEnhet.getSubimage(160*1, 136*1, 160, 136).getScaledInstance(blockSize.width-10, blockSize.height-10, Image.SCALE_SMOOTH)));
+				//setIcon(new ImageIcon(bufferPlayer.getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
 				setText("HP: " + enhet.getHealthPoint());
 				setId("Player");
 			} else if (enhet.getClass() == Mpc.class) {
-				setIcon(new ImageIcon(bufferMpc.getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+				setIcon(new ImageIcon(bufferEnhet.getSubimage(160*3, 136*1, 160, 136).getScaledInstance(blockSize.width-10, blockSize.height-10, Image.SCALE_SMOOTH)));
+				//setIcon(new ImageIcon(bufferMpc.getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
 				setId("MpcX" + enhet.getPosition().getX() + "Y" + enhet.getPosition().getY());
 			}
 			setLocation(blockSize.width*enhet.getPosition().x, blockSize.height*enhet.getPosition().y);
@@ -140,14 +144,14 @@ public class Frame extends JFrame implements KeyListener
 			
 			if (objekt.getClass() == Wall.class)
 			{
-				setIcon(new ImageIcon(bufferWall.getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
+				setIcon(new ImageIcon(bufferWall.getScaledInstance(blockSize.width, blockSize.height, Image.SCALE_SMOOTH)));
 			} else if (objekt.getClass() == Ground.class) 
 			{
-				setIcon(new ImageIcon(bufferGround.getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
+				setIcon(new ImageIcon(bufferGround.getScaledInstance(blockSize.width, blockSize.height, Image.SCALE_SMOOTH)));
 			} else if (objekt.getClass() == Goal.class) 
 			{
 				System.out.println("Goal");
-				setIcon(new ImageIcon(bufferGoal.getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
+				setIcon(new ImageIcon(bufferGoal.getScaledInstance(blockSize.width, blockSize.height, Image.SCALE_SMOOTH)));
 			}
 			setId("MapX" + objekt.getPosition().getX() + "Y" + objekt.getPosition().getY());
 		}
@@ -213,7 +217,7 @@ public class Frame extends JFrame implements KeyListener
 			bufferEnemy = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/enemy.png"));
 			bufferMpc = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/mpc.png"));
 			
-			
+			bufferEnhet = ImageIO.read(new File("/home/brasse/Projekt/Maze/image/characters.png"));
 			
 		} catch (IOException e) {
 			System.out.println("Cant loade images");
@@ -224,11 +228,13 @@ public class Frame extends JFrame implements KeyListener
 	
 	public void configFrame(String name)
 	{
-		this.setSize(700, 700);
+		this.setSize(800, 800);
 		this.setTitle(name);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.addKeyListener(this);
 		this.setFocusable(true);
+		
+		Map map = game.gameRound.map;
 		
 		panelGame.setVisible(false);
 		panelMenuOption.setVisible(false);
@@ -236,7 +242,8 @@ public class Frame extends JFrame implements KeyListener
 		panelFrame.setBackground(Color.BLUE);
 		
 		panelGame.setBackground(Color.RED);
-		panelGame.setSize(700, 700);
+		panelGame.setSize(map.getBlockSize().width*map.getBody().size.width, map.getBlockSize().height*map.getBody().size.height);
+		panelGame.setLocation((-map.getBlockSize().width*map.getPlayer().getPosition().x)+(this.getSize().width/2)-(map.getBlockSize().height/2), (-map.getBlockSize().height*map.getPlayer().getPosition().y)+(this.getSize().height/2)-(map.getBlockSize().height/2));
 		panelGame.addKeyListener(this);
 		panelGame.setLayout(null);
 		
@@ -329,7 +336,15 @@ public class Frame extends JFrame implements KeyListener
 						Enhet enhet = map.getEnheter(position);
 						Dimension blockSize = game.gameRound.map.getBlockSize();
 						temp.setLocation(blockSize.width*enhet.getPosition().x, blockSize.height*enhet.getPosition().y);
-						temp.setText("HP: " + enhet.getHealthPoint());
+						if (enhet.getHealthPoint() <= 0)
+						{
+							temp.setIcon(new ImageIcon(bufferEnhet.getSubimage(160*4, 136*1, 160, 136).getScaledInstance(blockSize.width, blockSize.height-10, Image.SCALE_SMOOTH)));
+							temp.setText("DEAD");
+						} else
+						{
+							temp.setText("HP: " + enhet.getHealthPoint());
+						}
+						
 					}
 
 				}
@@ -382,6 +397,7 @@ public class Frame extends JFrame implements KeyListener
 			{
 				System.out.println("Moved Left");
 				updatePlayer(panelGame);
+				panelGame.setLocation(panelGame.getLocation().x+map.getBlockSize().width, panelGame.getLocation().y);
 			}
 				break;
 			case Block:
@@ -399,14 +415,13 @@ public class Frame extends JFrame implements KeyListener
 			{
 				System.out.println("You have reast the goal!!!");
 				updatePlayer(panelGame);
+				panelGame.setLocation(panelGame.getLocation().x+map.getBlockSize().width, panelGame.getLocation().y);
 			}
 				break;
 
 			default:
 				break;
 			}
-
-	        
 	    }
 
 	    if (key == KeyEvent.VK_RIGHT) {
@@ -417,6 +432,7 @@ public class Frame extends JFrame implements KeyListener
 			{
 				System.out.println("Moved Right");
 				updatePlayer(panelGame);
+				panelGame.setLocation(panelGame.getLocation().x-map.getBlockSize().width, panelGame.getLocation().y);
 			}
 				break;
 			case Block:
@@ -434,14 +450,13 @@ public class Frame extends JFrame implements KeyListener
 			{
 				System.out.println("You have reast the goal!!!");
 				updatePlayer(panelGame);
+				panelGame.setLocation(panelGame.getLocation().x-map.getBlockSize().width, panelGame.getLocation().y);
 			}
 				break;
 
 			default:
 				break;
 			}
-
-	        
 	    }
 
 	    if (key == KeyEvent.VK_UP) {
@@ -452,6 +467,7 @@ public class Frame extends JFrame implements KeyListener
 			{
 				System.out.println("Moved Up");
 				updatePlayer(panelGame);
+				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y+map.getBlockSize().height);
 			}
 				break;
 			case Block:
@@ -469,14 +485,13 @@ public class Frame extends JFrame implements KeyListener
 			{
 				System.out.println("You have reast the goal!!!");
 				updatePlayer(panelGame);
+				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y+map.getBlockSize().height);
 			}
 				break;
 
 			default:
 				break;
 			}
-	    	
-	        
 	    }
 
 	    if (key == KeyEvent.VK_DOWN) {
@@ -487,6 +502,7 @@ public class Frame extends JFrame implements KeyListener
 			{
 				System.out.println("Moved Down");
 				updatePlayer(panelGame);
+				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y-map.getBlockSize().height);
 			}
 				break;
 			case Block:
@@ -504,16 +520,14 @@ public class Frame extends JFrame implements KeyListener
 			{
 				System.out.println("You have reast the goal!!!");
 				updatePlayer(panelGame);
+				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y-map.getBlockSize().height);
 			}
 				break;
 
 			default:
 				break;
-			}
-
-	        
+			}   
 	    }
-		
 	}
 
 	@Override

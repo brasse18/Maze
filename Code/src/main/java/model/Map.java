@@ -10,12 +10,12 @@ import model.Vector2d;
 
 public class Map
 {
-	private Vector2d body = new Vector2d(0,0,10,10);
-	private MapObjekt[][] map = new MapObjekt[body.size.width][body.size.height];
+	private Vector2d body;// = new Vector2d(0,0,10,20);
+	private MapObjekt[][] map;// = new MapObjekt[body.size.width][body.size.height];
 	private MapObjekt goal = new Goal(new Point(8, 8));
 	private ArrayList<Enhet> enheter = new ArrayList<Enhet>();
 	private Enhet player = new Player();
-	private Dimension blockSize = new Dimension(70, 70);
+	private Dimension blockSize = new Dimension(80, 80);
 	public Enhet enhet;
 	
 	public Map()
@@ -81,6 +81,7 @@ public class Map
 	public Map(Vector2d body){
 		super();
 		this.body = body;
+		map = new MapObjekt[body.size.width][body.size.height];
 	}
 
 	public MapObjekt[][] getMap() {
