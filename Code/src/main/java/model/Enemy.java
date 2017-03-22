@@ -13,8 +13,12 @@ public class Enemy extends Enhet
 	
 	public Enemy(Point position)
 	{
-		super(position);
-		
+		super(position, 5);
+	}
+	
+	public Enemy(Point position, int damage)
+	{
+		super(position, damage);
 	}
 
 	@Override

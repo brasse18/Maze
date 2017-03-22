@@ -23,7 +23,6 @@ public class MapObjekt extends Form
 	
 	public int getNrOfEnheter()
 	{
-		System.out.println(enheter.size());
 		return enheter.size();
 	}
 	
@@ -46,6 +45,23 @@ public class MapObjekt extends Form
 	public int getNrOfItems()
 	{
 		return items.size();
+	}
+	
+	public void addItem(Item item)
+	{
+		this.items.add(item);
+	}
+	
+	public Item getItemAt(int index)
+	{
+		return items.get(index);
+	}
+	
+	public void enhetPicksUpItemAt(int index, Enhet enhet)
+	{
+		items.get(index).isPicktUp();
+		enhet.addItem(items.get(index));
+		items.remove(index);
 	}
 	
 	public boolean isItems(Item item)

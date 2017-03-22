@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.Point;
+import java.util.ArrayList;
 
 import model.Form;
 
@@ -9,7 +10,9 @@ public abstract class Enhet extends Form
 	private int healthPoint;
 	private int movementSpeed;
 	private int damage;
-	public Item[] item;
+	private boolean dead = false;
+	private Item aktiveWeapon = null;
+	public ArrayList<Item> item = new ArrayList<Item>();
 	
 	
 	public Enhet(){
@@ -25,6 +28,14 @@ public abstract class Enhet extends Form
 		healthPoint = 100;
 		movementSpeed = 1;
 		damage = 10;
+	}
+	
+	public Enhet(Point position, int damage){
+		super();
+		setPosition(position);
+		healthPoint = 100;
+		movementSpeed = 1;
+		this.damage = damage;
 	}
 	
 	public void move(Direction direction)
@@ -56,10 +67,21 @@ public abstract class Enhet extends Form
 		}
 	}
 	
+	public boolean isDead()
+	{
+		return dead;
+	}
+	
 	public void takeDamage(int damage)
 	{
-		healthPoint = healthPoint - damage;
-		System.out.println(damage + " damage was taken" + getHealthPoint() + " HP left");
+		if (healthPoint <= 0)
+		{
+			dead = true;
+		} else
+		{
+			healthPoint = healthPoint - damage;
+		}
+		System.out.println(damage + " damage was taken " + getHealthPoint() + " HP left");
 	}
 
 	public int getHealthPoint() {
@@ -82,10 +104,45 @@ public abstract class Enhet extends Form
 	
 	public void attack(Enhet enhet)
 	{
-		enhet.takeDamage(getDamage());
+		if (aktiveWeapon != null)
+		{
+			aktiveWeapon.useOn(enhet);
+		} else {
+			enhet.takeDamage(getDamage());
+		}
 		System.out.println("Attackt Enemy");
 	}
-
+	
+	public boolean useHealthPoisonOn(Enhet enhet)
+	{
+		boolean out = false;
+		for (int i = 0;i<item.size();i++)
+		{
+			if (item.get(i).getClass() == HealthPoison.class)
+			{
+				out = item.get(i).useOn(enhet);
+				item.remove(i);
+				i = item.size()+1;
+			}
+		}
+		return out;
+	}
+	
+	public void getHealth(int health)
+	{
+		healthPoint += health;
+		System.out.println("Got" + health + " helth now have " + getHealthPoint() + " Helth");
+	}
+	
+	public void addItem(Item item)
+	{
+		this.item.add(item);
+	}
+	
+	public void setAktiveWeapon(Weapon weapon)
+	{
+		aktiveWeapon = weapon;
+	}
 	
 	public abstract boolean isFriendly(Enhet enhet);
 

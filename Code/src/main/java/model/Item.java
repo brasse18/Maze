@@ -6,15 +6,28 @@ public class Item extends Form
 {
 
 	private String name;
+	private boolean isOnTheGround = false;
 
-	public Item(){
+	public Item(boolean isOnTheGround){
 		super();
 		this.name = "Name less";
+		this.isOnTheGround = isOnTheGround;
 	}
 	
-	public Item(String name){
+	public Item(boolean isOnTheGround, String name){
 		super();
 		this.name = name;
+		this.isOnTheGround = isOnTheGround;
+	}
+	
+	public boolean isOnTheGround()
+	{
+		return isOnTheGround;
+	}
+	
+	public void isPicktUp()
+	{
+		isOnTheGround = false;
 	}
 	
 	public String getName()
