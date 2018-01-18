@@ -56,6 +56,8 @@ public class Frame extends JFrame implements KeyListener
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private String DefultDir = System.getProperty("user.dir");
+	
 	//menyerna f��r spelet skapas h��r
 	private Menu menuGame = new Menu(new Vector2d(0, 0, 200, 300));
 	private Menu menuPause = new Menu(new Vector2d(0, 0, 200, 300));
@@ -229,7 +231,7 @@ public class Frame extends JFrame implements KeyListener
 				AudioPlayer MGP = AudioPlayer.player;
 				AudioStream BGM;
 					try {
-						BGM = new AudioStream(new FileInputStream("/home/brasse/Projekt/Maze/resurs/sound/backrounds.wav"));
+						BGM = new AudioStream(new FileInputStream(DefultDir + "/../resurs/sound/backrounds.wav"));
 						MGP.start(BGM);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -340,11 +342,11 @@ public class Frame extends JFrame implements KeyListener
 	{
 		Dimension blockSize = game.gameRound.map.getBlockSize();
 		try {
-			bufferWall = ImageIO.read(new File("resurs/image/wall.png"));
-			bufferGround = ImageIO.read(new File("resurs/image/ground.jpg"));
-			bufferGoal = ImageIO.read(new File("resurs/image/stairs.png"));
-			bufferEnhet = ImageIO.read(new File("resurs/image/characters.png"));
-			bufferHealthPoison = ImageIO.read(new File("resurs/image/healthPoison.png"));
+			bufferWall = ImageIO.read(new File(DefultDir + "/../resurs/image/wall.png"));
+			bufferGround = ImageIO.read(new File(DefultDir + "/../resurs/image/ground.jpg"));
+			bufferGoal = ImageIO.read(new File(DefultDir + "/../resurs/image/stairs.png"));
+			bufferEnhet = ImageIO.read(new File(DefultDir + "/../resurs/image/characters.png"));
+			bufferHealthPoison = ImageIO.read(new File(DefultDir + "/../resurs/image/healthPoison.png"));
 			
 			imageGoal = bufferGoal.getScaledInstance(blockSize.width, blockSize.height, Image.SCALE_SMOOTH);
 			imageGround = bufferGround.getScaledInstance(blockSize.width, blockSize.height, Image.SCALE_SMOOTH);
@@ -614,6 +616,7 @@ public class Frame extends JFrame implements KeyListener
 	}
 	
 	public static void main(String[] args) {
+		System.out.println("Working Directory = " + System.getProperty("user.dir"));
 		Frame gui = new Frame("Maze");
 		gui.setVisible(true);
 		
