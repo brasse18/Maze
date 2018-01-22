@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -14,40 +12,21 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.imageio.ImageIO;
-import javax.print.attribute.standard.JobHoldUntil;
-import javax.sound.midi.MidiDevice.Info;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.SourceDataLine;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-
-import org.omg.CORBA.portable.InputStream;
-
-import com.sun.org.apache.xml.internal.security.utils.HelperNodeList;
-
 import model.Menu;
-//import model.Game;
-import sun.applet.Main;
-import sun.audio.AudioData;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
-import sun.audio.ContinuousAudioDataStream;
 
 public class Frame extends JFrame implements KeyListener
 {
@@ -56,7 +35,6 @@ public class Frame extends JFrame implements KeyListener
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String DefultDir = System.getProperty("user.dir");
 	
 	//menyerna f��r spelet skapas h��r
 	private Menu menuGame = new Menu(new Vector2d(0, 0, 200, 300));
@@ -223,7 +201,6 @@ public class Frame extends JFrame implements KeyListener
 	
 	private class Music implements Runnable
 	{
-
 		  @SuppressWarnings("resource")
 		@Override
 		  public void run() {
@@ -231,7 +208,7 @@ public class Frame extends JFrame implements KeyListener
 				AudioPlayer MGP = AudioPlayer.player;
 				AudioStream BGM;
 					try {
-						BGM = new AudioStream(new FileInputStream(DefultDir + "/../resurs/sound/backrounds.wav"));
+						BGM = new AudioStream(Music.class.getResourceAsStream("/sound/backrounds.wav"));
 						MGP.start(BGM);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -295,9 +272,11 @@ public class Frame extends JFrame implements KeyListener
 		Map map = game.gameRound.map;
 		String outString = "";
 		
-		outString = map.getPlayer().getPosition().x + ":" + map.getPlayer().getPosition().y + ":";
+		outString = map.toString();
 		
-		try(  PrintWriter out = new PrintWriter( "map.txt" )  ){
+		//outString = map.getPlayer().getPosition().x + ":" + map.getPlayer().getPosition().y + ":";
+		
+		try(  PrintWriter out = new PrintWriter( "map.save" )  ){
 		    out.println(outString);
 		}
 	}
@@ -342,11 +321,11 @@ public class Frame extends JFrame implements KeyListener
 	{
 		Dimension blockSize = game.gameRound.map.getBlockSize();
 		try {
-			bufferWall = ImageIO.read(new File(DefultDir + "/../resurs/image/wall.png"));
-			bufferGround = ImageIO.read(new File(DefultDir + "/../resurs/image/ground.jpg"));
-			bufferGoal = ImageIO.read(new File(DefultDir + "/../resurs/image/stairs.png"));
-			bufferEnhet = ImageIO.read(new File(DefultDir + "/../resurs/image/characters.png"));
-			bufferHealthPoison = ImageIO.read(new File(DefultDir + "/../resurs/image/healthPoison.png"));
+			bufferWall = ImageIO.read(Frame.class.getResourceAsStream("/image/wall.png"));
+			bufferGround = ImageIO.read(Frame.class.getResourceAsStream("/image/ground.jpg"));
+			bufferGoal = ImageIO.read(Frame.class.getResourceAsStream("/image/stairs.png"));
+			bufferEnhet = ImageIO.read(Frame.class.getResourceAsStream("/image/characters.png"));
+			bufferHealthPoison = ImageIO.read(Frame.class.getResourceAsStream("/image/healthPoison.png"));
 			
 			imageGoal = bufferGoal.getScaledInstance(blockSize.width, blockSize.height, Image.SCALE_SMOOTH);
 			imageGround = bufferGround.getScaledInstance(blockSize.width, blockSize.height, Image.SCALE_SMOOTH);
@@ -424,11 +403,9 @@ public class Frame extends JFrame implements KeyListener
 		panelFrame.add(panelGame);
 		panelFrame.setLayout(null);
 		
-		
 		loadMenu(menuGame, panelMenuGame);
 		loadMenu(menuOptions, panelMenuOption);
 		loadMenu(menuPause, panelMenuPause);
-		//loadGame(game, panelGame);
 		
 		this.add(panelFrame);
 		
@@ -436,11 +413,19 @@ public class Frame extends JFrame implements KeyListener
 	
 	public void startGame()
 	{
-		game.gameRound.map.makeNewMap();
-		loadGame();
-		loadeGameHud();
-		panelGame.setVisible(true);
-		panelGameHud.setVisible(true);
+		if (game.getStatus() == GameStatus.Pause)
+		{
+			game.startGame();
+		}
+		else if (game.getStatus() == GameStatus.Stop)
+		{
+			game.gameRound.map.makeNewMap();
+			loadGame();
+			loadeGameHud();
+			panelGame.setVisible(true);
+			panelGameHud.setVisible(true);
+			game.startGame();
+		}
 	}
 	
 	public void loadMenu(Menu menu, JPanel panel)
@@ -527,14 +512,12 @@ public class Frame extends JFrame implements KeyListener
 			if (panel.getComponent(i).getClass() == JForm.class || panel.getComponent(i).getClass() == JEnhet.class || panel.getComponent(i).getClass() == JItem.class)
 			{
 				JForm temp = (JForm) panel.getComponent(i);
-				
 				if (temp.getId() == name)
 				{
 					if (position.x == temp.getPosition().x && position.y == temp.getPosition().y)
 					{
 						if (panel.getComponent(i).getClass() == JItem.class)
 						{
-							System.out.println("Item");
 							if (map.getMap()[temp.getPosition().x][temp.getPosition().y].getNrOfItems() == 0)
 							{
 								panel.remove(i);
@@ -608,15 +591,17 @@ public class Frame extends JFrame implements KeyListener
 	public void gameOver()
 	{
 		panelGameOver.setVisible(true);
+		game.stopGame();
 	}
 	
 	public void pause()
 	{
-		
+        System.out.println("Pause Game");
+        panelMenuGame.setVisible(true);
+		game.pauseGame();
 	}
 	
 	public static void main(String[] args) {
-		System.out.println("Working Directory = " + System.getProperty("user.dir"));
 		Frame gui = new Frame("Maze");
 		gui.setVisible(true);
 		
@@ -629,237 +614,161 @@ public class Frame extends JFrame implements KeyListener
 		Map map = game.gameRound.map;
 		
 	    if (key == KeyEvent.VK_ESCAPE) {
-	        System.out.println("Pause Game");
-	        panelMenuGame.setVisible(true);
+	    	pause();
 	    }
 	    
-	    if (key == KeyEvent.VK_H) {
-	        System.out.println("Try to Using Health Poison");
-	        if (player.useHealthPoisonOn(player))
-	        {
-	        	System.out.println("Uset 1 Health Poison");
-	        	updatePlayer(panelGame);
-	        	
-	        } else {
-	        	System.out.println("No Health Poison left");
-			}
-	    }
-	    
-	    if (!player.isDead())
+	    if (game.getStatus() == GameStatus.Runing)
 	    {
-	    if (key == KeyEvent.VK_LEFT) {
-	        System.out.println("Try to move Left");
-	        Direction direction = Direction.left;
-	        switch (map.moveEnhet(player, direction)) {
-			case Move:
-			{
-				System.out.println("Moved Left");
-				updatePlayer(panelGame);
-				panelGame.setLocation(panelGame.getLocation().x+map.getBlockSize().width, panelGame.getLocation().y);
-			}
-				break;
-			case Block:
-			{
-				System.out.println("Cant move Left");
-			}
-				break;
-			case Fight:
-			{
-				System.out.println("Cant move Left you attackt a enemy");
-				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
-				updatePlayer(panelGame);
-			}
-				break;
-			case goal:
+	    	Direction direction;
+	    	Status status;
+		    if (key == KeyEvent.VK_H) {
+		        System.out.println("Try to Using Health Poison");
+		        if (player.useHealthPoisonOn(player))
+		        {
+		        	System.out.println("Uset 1 Health Poison");
+		        	updatePlayer(panelGame);
+		        	
+		        } else {
+		        	System.out.println("No Health Poison left");
+				}
+		    }
+		    
+		    if (key == KeyEvent.VK_M) {
+		        System.out.println(map.toString());
+		    }
+		    
+		    if (!player.isDead())
+		    {
+		    if (key == KeyEvent.VK_LEFT) {
+		        System.out.println("Try to move Left");
+		        direction = Direction.left;
+		    	status = map.moveEnhet(player, direction);
+		    	doAct(direction,status,map,player);
+		    }
+
+		    if (key == KeyEvent.VK_RIGHT) {
+		    	System.out.println("Try to move Right");
+		    	direction = Direction.right;
+		    	status = map.moveEnhet(player, direction);
+		    	doAct(direction,status,map,player);
+		    }
+
+		    if (key == KeyEvent.VK_UP) {
+		    	System.out.println("Try to move Up");
+		    	direction = Direction.up;
+		    	status = map.moveEnhet(player, direction);
+		    	doAct(direction,status,map,player);
+		    }
+
+		    if (key == KeyEvent.VK_DOWN) {
+		    	System.out.println("Try to move Down");
+		    	direction = Direction.down;
+		    	status = map.moveEnhet(player, direction);
+		    	doAct(direction,status,map,player);  
+		    }
+	     }
+	   }
+	}
+	
+	public void doAct(Direction direction,Status status, Map map, Enhet player)
+	{
+	    switch (status) {
+		case pickUp:
+		{
+			updateGui(panelGame, "Item", player.getPosition());
+			
+		}
+		case goal:
+		{
+			if (status == Status.goal)
 			{
 				System.out.println("You have reast the goal!!!");
-				updatePlayer(panelGame);
-				panelGame.setLocation(panelGame.getLocation().x+map.getBlockSize().width, panelGame.getLocation().y);
 				panelWin.setVisible(true);
 			}
-				break;
-			case dead:
+		}
+		case Move:
+		{
+			switch (direction)
 			{
-				System.out.println("You are Dead");
-				updatePlayer(panelGame);
-				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
-				gameOver();
-			}
-				break;
-			case pickUp:
-			{
-				panelGame.setLocation(panelGame.getLocation().x+map.getBlockSize().width, panelGame.getLocation().y);
-				updateGui(panelGame, "Item", map.getNextStep(player, direction));
-				updatePlayer(panelGame);
-				
-			}
-				break;
-
-			default:
-				break;
-			}
-	    }
-
-	    if (key == KeyEvent.VK_RIGHT) {
-	    	System.out.println("Try to move Right");
-	    	Direction direction = Direction.right;
-	        switch (map.moveEnhet(player, direction)) {
-			case Move:
-			{
-				System.out.println("Moved Right");
-				updatePlayer(panelGame);
-				panelGame.setLocation(panelGame.getLocation().x-map.getBlockSize().width, panelGame.getLocation().y);
-			}
-				break;
-			case Block:
-			{
-				System.out.println("Cant move Right");
-			}
-				break;
-			case Fight:
-			{
-				System.out.println("Cant move Right you attackt a enemy");
-				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
-				updatePlayer(panelGame);
-			}
-				break;
-			case goal:
-			{
-				System.out.println("You have reast the goal!!!");
-				updatePlayer(panelGame);
-				panelGame.setLocation(panelGame.getLocation().x-map.getBlockSize().width, panelGame.getLocation().y);
-				panelWin.setVisible(true);
-			}
-			break;
-			case dead:
-			{
-				System.out.println("You are Dead");
-				updatePlayer(panelGame);
-				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
-				gameOver();
-			}
-				break;
-			case pickUp:
-			{
-				panelGame.setLocation(panelGame.getLocation().x-map.getBlockSize().width, panelGame.getLocation().y);
-				updateGui(panelGame, "Item", map.getNextStep(player, direction));
-				updatePlayer(panelGame);
-				
-			}
-				break;
-
-			default:
-				break;
-			}
-	    }
-
-	    if (key == KeyEvent.VK_UP) {
-	    	System.out.println("Try to move Up");
-	    	Direction direction = Direction.up;
-	        switch (map.moveEnhet(player, direction)) {
-			case Move:
+			case up:
 			{
 				System.out.println("Moved Up");
-				updatePlayer(panelGame);
 				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y+map.getBlockSize().height);
 			}
+			break;
+			case down:
+			{
+				System.out.println("Moved Down");
+				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y-map.getBlockSize().height);
+			}
+			break;
+			case left:
+			{
+				System.out.println("Moved Left");
+				panelGame.setLocation(panelGame.getLocation().x+map.getBlockSize().width, panelGame.getLocation().y);
+			}
+			break;
+			case right:
+			{
+				System.out.println("Moved Right");
+				panelGame.setLocation(panelGame.getLocation().x-map.getBlockSize().width, panelGame.getLocation().y);
+			}
+			break;
+			default:
 				break;
-			case Block:
+			}
+			updatePlayer(panelGame);
+			
+		}
+			break;
+		case Block:
+		{
+			switch (direction)
+			{
+			case up:
 			{
 				System.out.println("Cant move Up");
 			}
-				break;
-			case Fight:
-			{
-				System.out.println("Cant move Up you attackt a enemy");
-				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
-				updatePlayer(panelGame);
-			}
-				break;
-			case goal:
-			{
-				System.out.println("You have reast the goal!!!");
-				updatePlayer(panelGame);
-				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y+map.getBlockSize().height);
-				panelWin.setVisible(true);
-			}
-				break;
-			case dead:
-			{
-				System.out.println("You are Dead");
-				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
-				updatePlayer(panelGame);
-				gameOver();
-			}
-				break;
-			case pickUp:
-			{
-				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y+map.getBlockSize().height);
-				updateGui(panelGame, "Item", map.getNextStep(player, direction));
-				updatePlayer(panelGame);
-				
-			}
-				break;
-
-			default:
-				break;
-			}
-	    }
-
-	    if (key == KeyEvent.VK_DOWN) {
-	    	System.out.println("Try to move Down");
-	    	Direction direction = Direction.down;
-	        switch (map.moveEnhet(player, direction)) {
-			case Move:
-			{
-				System.out.println("Moved Down");
-				updatePlayer(panelGame);
-				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y-map.getBlockSize().height);
-			}
-				break;
-			case Block:
+			break;
+			case down:
 			{
 				System.out.println("Cant move Down");
 			}
-				break;
-			case Fight:
+			break;
+			case left:
 			{
-				System.out.println("Cant move Down you attackt a enemy");
-				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
-				updatePlayer(panelGame);
+				System.out.println("Cant move Left");
 			}
-				break;
-			case goal:
+			break;
+			case right:
 			{
-				System.out.println("You have reast the goal!!!");
-				updatePlayer(panelGame);
-				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y-map.getBlockSize().height);
-				panelWin.setVisible(true);
+				System.out.println("Cant move Right");
 			}
-				break;
-			case dead:
-			{
-				System.out.println("You are Dead");
-				updatePlayer(panelGame);
-				updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
-				gameOver();
-			}
-				break;
-			case pickUp:
-			{
-				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y-map.getBlockSize().height);
-				updateGui(panelGame, "Item", map.getNextStep(player, direction));
-				updatePlayer(panelGame);
-				
-			}
-				break;
-				
-
+			break;
 			default:
 				break;
-			}   
-	    }
-	    }
+			}
+		}
+			break;
+		case Fight:
+		{
+			System.out.println("Cant move Left you attackt a enemy");
+			updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
+			updatePlayer(panelGame);
+		}
+			break;
+		case dead:
+		{
+			System.out.println("You are Dead");
+			updatePlayer(panelGame);
+			updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
+			gameOver();
+		}
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	@Override

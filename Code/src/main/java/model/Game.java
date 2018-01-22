@@ -5,11 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import model.GameRound;
+import model.GameStatus;
 
 public class Game
 {
 
 	public GameRound gameRound = new GameRound();
+	private GameStatus gameStatus = GameStatus.Stop;
 
 	public Game(){
 		super();
@@ -27,15 +29,10 @@ public class Game
 			System.out.print("gg");
 		}
 		
-		
-		//outMap = map.toString();
-			//for (int x = 0;x<gameRound.map.getBody().size.getHeight();x++)
-			//{
-			//	outMap = gameRound.map.toString(x);
-			//}
-			//try(  PrintWriter out = new PrintWriter( "map.txt" )  ){
-			//    out.println(outMap);
-			//}
+		    outMap = map.toString();
+			try(  PrintWriter out = new PrintWriter( "map.save" )  ){
+			    out.println(outMap);
+			}
 			
 	}
 
@@ -46,16 +43,20 @@ public class Game
 	}
 
 	public void startGame() {
-		// TODO implement me
+		gameStatus = GameStatus.Runing;
 	}
 
 	public void stopGame() {
-		// TODO implement me
+		gameStatus = GameStatus.Stop;
 	}
 
 	public void pauseGame() {
-		// TODO implement me
+		gameStatus = GameStatus.Pause;
 	}
-
+	
+	public GameStatus getStatus()
+	{
+		return gameStatus;
+	}
 }
 

@@ -21,7 +21,6 @@ public class Map
 	public Map()
 	{
 		makeNewMap();
-		
 	}
 	
 	
@@ -75,25 +74,30 @@ public class Map
 	}
 	
 	
-	public String toString(int x)
+	public String toString()
 	{
 		String outMap = "";
 		
-		for (int y = 0;y<getBody().size.getWidth();y++)
+		for (int y = 0;y<body.size.height;y++)
 		{
-			if (outMap != "")
+			for (int x = 0;x<body.size.width;x++)
 			{
-				outMap += ":";
+				if (getMap()[x][y].getClass() == Wall.class)
+				{
+					outMap += "1";
+				}
+				else if (getMap()[x][y].getClass() == Ground.class)
+				{
+					outMap += "0";
+				}
+				if (x < body.size.width-1)
+				{
+					outMap += ":";
+				}
 			}
-			if (getMap()[x][y].isBlocking() == true)
-			{
-				outMap += "1";
-			}
-			else if (getMap()[x][y].isBlocking() == false)
-			{
-				outMap += "2";
-			}
+			outMap += "\n";
 		}
+		//System.out.println(outMap);
 		
 		return outMap;
 	}
@@ -101,8 +105,8 @@ public class Map
 	private void addEnemysToMap()
 	{
 		addEnhet(new Enemy(new Point(10, 5), 5));
-		addEnhet(new Enemy(new Point(3, 3), 10));
-		addEnhet(new Enemy(new Point(8, 3), 25));
+		addEnhet(new Enemy(new Point(3,  3), 10));
+		addEnhet(new Enemy(new Point(8,  3), 25));
 		addEnhet(new Enemy(new Point(18, 2), 50));
 		
 	}
@@ -267,6 +271,7 @@ public class Map
 						{
 							System.out.println("Pickt up Item");
 							map[nextStep.x][nextStep.y].enhetPicksUpItemAt(0, enhet);
+							
 							status = status.pickUp;
 							
 						}

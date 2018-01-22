@@ -14,41 +14,7 @@ public class Form
 	
 	public void setImage(Objekt objekt)
 	{
-		switch (objekt) {
-		case Player:
-		{
-			image = "/home/brasse/Projekt/Maze/image/player.jpg";
-		}
-			break;
-		case Enemy:
-		{
-			image = "/home/brasse/Projekt/Maze/image/enemy.png";
-		}
-			break;
-		case Mpc:
-		{
-			image = "/home/brasse/Projekt/Maze/image/mpc.jpg";
-		}
-			break;
-		case Ground:
-		{
-			image = "/home/brasse/Projekt/Maze/image/ground.jpg";
-		}
-			break;
-		case Wall:
-		{
-			image = "/home/brasse/Projekt/Maze/image/wall.png";
-		}
-			break;
-		case Goal:
-		{
-			image = "/home/brasse/Projekt/Maze/image/goal.jpg";
-		}
-			break;
-
-		default:
-			break;
-		}
+		
 	}
 	
 	public Point getPosition()
