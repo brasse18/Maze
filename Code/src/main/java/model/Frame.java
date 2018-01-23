@@ -283,8 +283,27 @@ public class Frame extends JFrame implements KeyListener
 	
 	public void load() throws IOException
 	{
+//		Map map = game.gameRound.map;
+//		BufferedReader br = new BufferedReader(new FileReader("map.txt"));
+//	    try {
+//	        StringBuilder sb = new StringBuilder();
+//	        String line = br.readLine();
+//
+//	        while (line != null) {
+//	            sb.append(line);
+//	            sb.append("\n");
+//	            line = br.readLine();
+//	        }
+//	        String[] position = sb.toString().split(":");
+//	        map.getPlayer().setPosition(new Point(Integer.parseInt(position[0]), Integer.parseInt(position[1])));
+//	        updatePlayer(panelGame);
+//	    } finally {
+//	        br.close();
+//	    }
+		
+		
 		Map map = game.gameRound.map;
-		BufferedReader br = new BufferedReader(new FileReader("map.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("map.save"));
 	    try {
 	        StringBuilder sb = new StringBuilder();
 	        String line = br.readLine();
@@ -294,12 +313,13 @@ public class Frame extends JFrame implements KeyListener
 	            sb.append("\n");
 	            line = br.readLine();
 	        }
+	      System.out.println(sb);
 	        String[] position = sb.toString().split(":");
-	        map.getPlayer().setPosition(new Point(Integer.parseInt(position[0]), Integer.parseInt(position[1])));
-	        updatePlayer(panelGame);
 	    } finally {
 	        br.close();
 	    }
+		
+		
 	}
 
 	public Frame(String name){

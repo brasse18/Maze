@@ -23,6 +23,11 @@ public class Map
 		makeNewMap();
 	}
 	
+	public Map(int inMap[][])
+	{
+		
+	}
+	
 	
 	public void makeNewMap()
 	{
