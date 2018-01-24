@@ -318,11 +318,19 @@ public class Frame extends JFrame implements KeyListener
 		}
 		else if (mapNr == 1)
 		{
-			mapName = "map1.map";
+			mapName = "/map/map1.map";
 		}
 		else if (mapNr == 2)
 		{
-			mapName = "map2.map";
+			mapName = "/map/map2.map";
+		}
+		else if (mapNr == 3)
+		{
+			mapName = "/map/map3.map";
+		}
+		else if (mapNr == 4)
+		{
+			mapName = "/map/map4.map";
 		}
 		
 		BufferedReader br = new BufferedReader(new FileReader(mapName));
