@@ -23,9 +23,34 @@ public class Map
 		makeNewMap();
 	}
 	
-	public Map(int inMap[][])
+	public Map(int inMap[][],Vector2d inBody)
 	{
-		
+		body = inBody;
+		map = new MapObjekt[body.size.width][body.size.height];
+		for (int y = 0;y<body.size.height;y++)
+		{
+			for (int x = 0;x<body.size.width;x++)
+			{
+				switch (inMap[x][y])
+				{
+				case 0:
+				{
+					map[x][y] = new Ground(new Point(x, y));
+				}
+				break;
+				case 1:
+				{
+					map[x][y] = new Wall(new Point(x, y));
+				}
+				break;
+				case 2:
+				{
+					
+				}
+				break;
+				}
+				}
+		  }
 	}
 	
 	

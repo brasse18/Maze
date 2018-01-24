@@ -11,6 +11,11 @@ public class GameRound
 		super();
 		
 	}
+	
+	public void loadMap(int newMap[][], Vector2d vector2d)
+	{
+		map = new Map(newMap, vector2d);
+	}
 
 	public boolean gameOver() {
 		// TODO implement me

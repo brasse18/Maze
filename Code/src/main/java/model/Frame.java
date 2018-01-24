@@ -229,7 +229,12 @@ public class Frame extends JFrame implements KeyListener
 				panelMenuGame.setVisible(false);
 				panelMenuOption.setVisible(false);
 				musik.run();
-				startGame();
+				try {
+					startGame();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else if(buttonText.equals("Option"))
 			{
@@ -240,7 +245,7 @@ public class Frame extends JFrame implements KeyListener
 			else if(buttonText.equals("Loade"))
 			{
 				try {
-					load();
+					load(0,"modMap.map");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -271,8 +276,8 @@ public class Frame extends JFrame implements KeyListener
 	{
 		Map map = game.gameRound.map;
 		String outString = "";
-		
-		outString = map.toString();
+		outString = String.valueOf(map.getBody().getSize().getHeight()) + ":" + String.valueOf(map.getBody().getSize().getWidth()) + "\n";
+		outString += map.toString();
 		
 		//outString = map.getPlayer().getPosition().x + ":" + map.getPlayer().getPosition().y + ":";
 		
@@ -281,7 +286,7 @@ public class Frame extends JFrame implements KeyListener
 		}
 	}
 	
-	public void load() throws IOException
+	public void load(int mapNr, String modMap) throws IOException
 	{
 //		Map map = game.gameRound.map;
 //		BufferedReader br = new BufferedReader(new FileReader("map.txt"));
@@ -303,23 +308,62 @@ public class Frame extends JFrame implements KeyListener
 		
 		
 		Map map = game.gameRound.map;
-		BufferedReader br = new BufferedReader(new FileReader("map.save"));
+		int newMap[][] = new int[5][5];
+		int newX = 0;
+		int newY = 0;
+		String mapName = "map1.map";
+		if (mapNr == 0)
+		{
+			mapName = modMap;
+		}
+		else if (mapNr == 1)
+		{
+			mapName = "map1.map";
+		}
+		else if (mapNr == 2)
+		{
+			mapName = "map2.map";
+		}
+		
+		BufferedReader br = new BufferedReader(new FileReader(mapName));
+		
+		
 	    try {
 	        StringBuilder sb = new StringBuilder();
 	        String line = br.readLine();
-
+	        String[] size = line.toString().split(":");
+	        newX = Integer.parseInt(size[1]);
+	        newY = Integer.parseInt(size[0]);
+	        System.out.println(newX + " " + newY);
+	        newMap = new int[newX][newY];
+	        line = br.readLine();
+	        int yCount = 0;
 	        while (line != null) {
 	            sb.append(line);
-	            sb.append("\n");
+	            String[] arrayX = line.toString().split(":");
+	            for (int i = 0;i<newX;i++)
+	            {
+	            	newMap[i][yCount] = Integer.parseInt(arrayX[i]);
+	            }
+	            yCount++;
 	            line = br.readLine();
 	        }
-	      System.out.println(sb);
-	        String[] position = sb.toString().split(":");
+//	        for (int y = 0;y<newY;y++)
+//	        {
+//		        for (int x = 0;x<newX;x++)
+//		        {
+//		        	System.out.print(newMap[x][y]);
+//		        }
+//		        System.out.println("");
+//	        }
+	        game.gameRound.loadMap(newMap, new Vector2d(0, 0, newX, newY));
 	    } finally {
 	        br.close();
 	    }
 		
-		
+		loadGame();
+		updatePlayer(panelGame);
+		updateCam(map, game.gameRound.map.getPlayer());
 	}
 
 	public Frame(String name){
@@ -431,7 +475,7 @@ public class Frame extends JFrame implements KeyListener
 		
 	}
 	
-	public void startGame()
+	public void startGame() throws IOException
 	{
 		if (game.getStatus() == GameStatus.Pause)
 		{
@@ -439,9 +483,11 @@ public class Frame extends JFrame implements KeyListener
 		}
 		else if (game.getStatus() == GameStatus.Stop)
 		{
-			game.gameRound.map.makeNewMap();
+			//game.gameRound.map.makeNewMap();
+			load(1,"");
 			loadGame();
 			loadeGameHud();
+			updateCam(game.gameRound.map, game.gameRound.map.getPlayer());
 			panelGame.setVisible(true);
 			panelGameHud.setVisible(true);
 			game.startGame();
@@ -489,39 +535,44 @@ public class Frame extends JFrame implements KeyListener
 	{
 		Enhet player = game.gameRound.map.getPlayer();
 		Map map = game.gameRound.map;
-		
-		JEnhet GUIPlayer = new JEnhet(player);
-		JEnhet GUIEnhet;
-		JItem GUIItem;
-		panelGame.add(GUIPlayer);
-		JMapObjekt mapBlock;
-		mapBlock = new JMapObjekt(game.gameRound.map.getGoal());
-		panelGame.add(mapBlock);
-		for (int y = 0;y<game.gameRound.map.getBody().size.height;y++)
-		{
-			for (int x = 0;x<game.gameRound.map.getBody().size.width;x++)
+		panelGame.removeAll();
+		panelGame.setSize(map.getBlockSize().width*map.getBody().size.width, map.getBlockSize().height*map.getBody().size.height);
+			JEnhet GUIPlayer = new JEnhet(player);
+			JEnhet GUIEnhet;
+			JItem GUIItem;
+			panelGame.add(GUIPlayer);
+			JMapObjekt mapBlock;
+			mapBlock = new JMapObjekt(game.gameRound.map.getGoal());
+			panelGame.add(mapBlock);
+			for (int y = 0;y<game.gameRound.map.getBody().size.height;y++)
 			{
-				mapBlock = new JMapObjekt(game.gameRound.map.getMap()[x][y]);
-				if (game.gameRound.map.getMap()[x][y].getNrOfEnheter() != 0)
+				for (int x = 0;x<game.gameRound.map.getBody().size.width;x++)
 				{
-					for (int i = 0;i<game.gameRound.map.getMap()[x][y].getNrOfEnheter();i++)
+					mapBlock = new JMapObjekt(game.gameRound.map.getMap()[x][y]);
+					if (game.gameRound.map.getMap()[x][y].getNrOfEnheter() != 0)
 					{
-						GUIEnhet = new JEnhet(game.gameRound.map.getMap()[x][y].getEnhetAt(i));
-						panelGame.add(GUIEnhet);
-						
+						for (int i = 0;i<game.gameRound.map.getMap()[x][y].getNrOfEnheter();i++)
+						{
+							GUIEnhet = new JEnhet(game.gameRound.map.getMap()[x][y].getEnhetAt(i));
+							panelGame.add(GUIEnhet);
+						}
 					}
-				}
-				if (game.gameRound.map.getMap()[x][y].getNrOfItems() != 0)
-				{
-					for (int i = 0;i<game.gameRound.map.getMap()[x][y].getNrOfItems();i++)
+					if (game.gameRound.map.getMap()[x][y].getNrOfItems() != 0)
 					{
-						GUIItem = new JItem(game.gameRound.map.getMap()[x][y].getItemAt(i));
-						panelGame.add(GUIItem);
+						for (int i = 0;i<game.gameRound.map.getMap()[x][y].getNrOfItems();i++)
+						{
+							GUIItem = new JItem(game.gameRound.map.getMap()[x][y].getItemAt(i));
+							panelGame.add(GUIItem);
+						}
 					}
+					panelGame.add(mapBlock);
 				}
-				panelGame.add(mapBlock);
 			}
-		}
+	}
+	
+	public void updateCam( Map map, Enhet player)
+	{
+		panelGame.setLocation(map.getBlockSize().width*4-map.getBlockSize().width*player.getPosition().x,map.getBlockSize().width*4-map.getBlockSize().width*player.getPosition().y);
 	}
 	
 	public void updateGui(JPanel panel, String name, Point position)
@@ -704,6 +755,15 @@ public class Frame extends JFrame implements KeyListener
 			{
 				System.out.println("You have reast the goal!!!");
 				panelWin.setVisible(true);
+				try {
+					load(2,"");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				updatePlayer(panelGame);
+				updateCam(map, player);
+				//panelGame.setLocation(-map.getBlockSize().width*player.getPosition().x, -map.getBlockSize().width*player.getPosition().y);
 			}
 		}
 		case Move:
@@ -713,31 +773,34 @@ public class Frame extends JFrame implements KeyListener
 			case up:
 			{
 				System.out.println("Moved Up");
-				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y+map.getBlockSize().height);
+				//panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y+map.getBlockSize().height);
 			}
 			break;
 			case down:
 			{
 				System.out.println("Moved Down");
-				panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y-map.getBlockSize().height);
+				//panelGame.setLocation(panelGame.getLocation().x, panelGame.getLocation().y-map.getBlockSize().height);
 			}
 			break;
 			case left:
 			{
 				System.out.println("Moved Left");
-				panelGame.setLocation(panelGame.getLocation().x+map.getBlockSize().width, panelGame.getLocation().y);
+				//panelGame.setLocation(panelGame.getLocation().x+map.getBlockSize().width, panelGame.getLocation().y);
 			}
 			break;
 			case right:
 			{
 				System.out.println("Moved Right");
-				panelGame.setLocation(panelGame.getLocation().x-map.getBlockSize().width, panelGame.getLocation().y);
+				//panelGame.setLocation(panelGame.getLocation().x-map.getBlockSize().width, panelGame.getLocation().y);
 			}
 			break;
 			default:
 				break;
 			}
+			
 			updatePlayer(panelGame);
+			updateCam(map, player);
+			//panelGame.setLocation(map.getBlockSize().width*4-map.getBlockSize().width*player.getPosition().x,map.getBlockSize().width*4-map.getBlockSize().width*player.getPosition().y);
 			
 		}
 			break;
