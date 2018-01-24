@@ -12,9 +12,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import javax.imageio.ImageIO;
@@ -25,6 +28,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import model.Menu;
+import sun.applet.Main;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
@@ -311,29 +315,33 @@ public class Frame extends JFrame implements KeyListener
 		int newMap[][] = new int[5][5];
 		int newX = 0;
 		int newY = 0;
-		String mapName = "map1.map";
+		InputStreamReader mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map1.map"));
+		FileInputStream fstream;
+		DataInputStream in;;
 		if (mapNr == 0)
 		{
-			mapName = modMap;
+			fstream = new FileInputStream(modMap);
+			in = new DataInputStream(fstream);
+			mapFile = new InputStreamReader(in);
 		}
 		else if (mapNr == 1)
 		{
-			mapName = "/map/map1.map";
+			mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map1.map"));
 		}
 		else if (mapNr == 2)
 		{
-			mapName = "/map/map2.map";
+			mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map2.map"));
 		}
 		else if (mapNr == 3)
 		{
-			mapName = "/map/map3.map";
+			mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map3.map"));
 		}
 		else if (mapNr == 4)
 		{
-			mapName = "/map/map4.map";
+			mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map4.map"));
 		}
 		
-		BufferedReader br = new BufferedReader(new FileReader(mapName));
+		BufferedReader br = new BufferedReader(mapFile);
 		
 		
 	    try {
@@ -342,7 +350,7 @@ public class Frame extends JFrame implements KeyListener
 	        String[] size = line.toString().split(":");
 	        newX = Integer.parseInt(size[1]);
 	        newY = Integer.parseInt(size[0]);
-	        System.out.println(newX + " " + newY);
+	        //System.out.println(newX + " " + newY);
 	        newMap = new int[newX][newY];
 	        line = br.readLine();
 	        int yCount = 0;
