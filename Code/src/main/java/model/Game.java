@@ -37,9 +37,7 @@ public class Game
 	}
 
 	public void load() {
-		String test = "10:20:30:43";
-		String[] gg = test.split(":");
-		System.out.println(gg[1]);
+		
 	}
 
 	public void startGame() {

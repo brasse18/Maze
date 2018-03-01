@@ -16,7 +16,7 @@ public class GameRound
 	
 	public void loadMap(int newMap[][], Vector2d vector2d, Point playerPoint)
 	{
-		map = new Map(newMap, vector2d, playerPoint);
+		map.setMap(newMap, vector2d, playerPoint);
 	}
 
 	public boolean gameOver() {

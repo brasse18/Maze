@@ -25,6 +25,11 @@ public class Map
 	
 	public Map(int inMap[][],Vector2d inBody,Point pleyerPos)
 	{
+		setMap(inMap, inBody, pleyerPos);
+	}
+	
+	public void setMap(int inMap[][],Vector2d inBody,Point pleyerPos)
+	{
 		body = inBody;
 		map = new MapObjekt[body.size.width][body.size.height];
 		player.setPosition(pleyerPos);
@@ -52,6 +57,7 @@ public class Map
 				}
 				}
 		  }
+		enheter = null;
 	}
 	
 	
