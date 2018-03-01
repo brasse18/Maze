@@ -1,5 +1,7 @@
 package model;
 
+import java.awt.Point;
+
 import model.Map;
 
 public class GameRound
@@ -12,9 +14,9 @@ public class GameRound
 		
 	}
 	
-	public void loadMap(int newMap[][], Vector2d vector2d)
+	public void loadMap(int newMap[][], Vector2d vector2d, Point playerPoint)
 	{
-		map = new Map(newMap, vector2d);
+		map = new Map(newMap, vector2d, playerPoint);
 	}
 
 	public boolean gameOver() {

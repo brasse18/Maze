@@ -23,10 +23,11 @@ public class Map
 		makeNewMap();
 	}
 	
-	public Map(int inMap[][],Vector2d inBody)
+	public Map(int inMap[][],Vector2d inBody,Point pleyerPos)
 	{
 		body = inBody;
 		map = new MapObjekt[body.size.width][body.size.height];
+		player.setPosition(pleyerPos);
 		for (int y = 0;y<body.size.height;y++)
 		{
 			for (int x = 0;x<body.size.width;x++)
@@ -132,10 +133,10 @@ public class Map
 		return outMap;
 	}
 	
-	private void addEnemysToMap()
+	public void addEnemysToMap()
 	{
 		addEnhet(new Enemy(new Point(10, 5), 5));
-		addEnhet(new Enemy(new Point(3,  3), 10));
+		//addEnhet(new Enemy(new Point(3,  3), 10));
 		addEnhet(new Enemy(new Point(8,  3), 25));
 		addEnhet(new Enemy(new Point(18, 2), 50));
 		
@@ -148,6 +149,11 @@ public class Map
 			enheter.add(enhet);
 			map[enhet.getPosition().x][enhet.getPosition().y].addEnhet(enhet);
 		}
+	}
+	
+	public int getNrOfEnheter()
+	{
+		return enheter.size();
 	}
 	
 	public MapObjekt getGoal()
