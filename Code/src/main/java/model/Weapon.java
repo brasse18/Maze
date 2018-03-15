@@ -22,10 +22,22 @@ public class Weapon extends Item {
 		this.setPosition(position);
 	}
 	
+	public int getDamage()
+	{
+		return damage;
+	}
+	
 	@Override
 	public boolean useOn(Enhet enhet) {
 		enhet.takeDamage(damage);
 		return true;
 	}
 
+	@Override
+	public String toString()
+	{
+		return "2:" + getPosition().x + ":" +  getPosition().y + ":" + getDamage();	
+	}
+	
+	
 }

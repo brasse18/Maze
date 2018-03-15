@@ -6,21 +6,22 @@ public class HealthPoison extends Item {
 	
 	int health;
 	
-	public HealthPoison(boolean isOnTheGround)
-	{
-		super(isOnTheGround);
-		health = 30;
-	}
-	
-	public HealthPoison(boolean isOnTheGround,int helth) {
+	public HealthPoison(Point position, boolean isOnTheGround,int helth) {
 		super(isOnTheGround);
 		this.health = helth;
+		setPosition(position);
 	}
 
 
-	public HealthPoison(Point position) {
+	public HealthPoison(Point position,int helth) {
 		super(true);
+		this.health = helth;
 		setPosition(position);
+	}
+	
+	public int getHealth()
+	{
+		return health;
 	}
 
 
@@ -30,4 +31,10 @@ public class HealthPoison extends Item {
 		return true;
 	}
 
+	@Override
+	public String toString()
+	{
+		return "1:" + getPosition().x + ":" +  getPosition().y + ":" + getHealth();	
+	}
+	
 }
