@@ -382,68 +382,35 @@ public class Frame extends JFrame implements KeyListener
 	        // loade position for player from file
 	        line = br.readLine();
 	        String[] player = line.toString().split(":");
-	        System.out.println("Player pos: X:" + enhet[0] + " Y:" + enhet[1]);
-	        playerPoint = new Point(Integer.parseInt(enhet[0]),Integer.parseInt(enhet[1]));
+	        System.out.println("Player pos: X:" + player[0] + " Y:" + player[1]);
+	        playerPoint = new Point(Integer.parseInt(player[0]),Integer.parseInt(player[1]));
 	        map.getPlayer().setPosition(playerPoint);
 	        
 	        // seting the new map
 	        game.gameRound.loadMap(newMap, new Vector2d(0, 0, newX, newY), playerPoint);
 	        
 	        // loade enheter from file
-	        line = br.readLine();
-	        int nrOfEnheter = Integer.parseInt(line.toString());
-	        for (int i = 0; i < nrOfEnheter; i++) {
-	        	line = br.readLine();
-		        String[] enhet = line.toString().split(":");
-		        
-		        switch (Integer.parseInt(enhet[2])) {
-				case 1:
-					map.addEnhet(new Enemy(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), Integer.parseInt(enhet[3])));
-					break;
-					
-				case 0:
-					map.addEnhet(new Mpc(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), Integer.parseInt(enhet[3])));
-					break;
-
-				default:
-					break;
-				}
-			}
-	        
-	        
-
-	        
-	        
-	        //map.addEnemysToMap();
-	        
-	        //map.addEnhet(new Enemy(new Point(18, 2), 50));
 //	        line = br.readLine();
-//	        while (line != null) {
-//		        enhet = line.toString().split(":");
-//		        System.out.println("New Enhet pos: X:" + enhet[0] + " Y:" + enhet[1]);
+//	        int nrOfEnheter = Integer.parseInt(line.toString());
+//	        for (int i = 0; i < nrOfEnheter; i++) {
+//	        	line = br.readLine();
+//		        String[] enhet = line.toString().split(":");
 //		        
-//		        map.addEnhet(new Enemy(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), 10));
-//		        if (Integer.parseInt(enhet[2]) == 1)
-//		        {
-//		        	map.addEnhet(new Enemy(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), 10));
-//		        }
-//		        line = br.readLine();
-//            }
-	        
-	        
-	        
-	        
-//	        for (int y = 0;y<newY;y++)
-//	        {
-//		        for (int x = 0;x<newX;x++)
-//		        {
-//		        	System.out.print(newMap[x][y]);
-//		        }
-//		        System.out.println("");
-//	        }
-	        
-	        
-	   
+//		        switch (Integer.parseInt(enhet[2])) {
+//				case 1:
+//					System.out.println(enhet[0] + " " + enhet[1] + " " + enhet[3]);
+//					map.addEnhet(new Enemy(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), Integer.parseInt(enhet[3])));
+//					break;
+//					
+//				case 0:
+//					System.out.println(enhet[0] + " " + enhet[1] + " " + enhet[3]);
+//					map.addEnhet(new Mpc(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), Integer.parseInt(enhet[3])));
+//					break;
+//
+//				default:
+//					break;
+//				}
+//			}
 	        
 	    } finally {
 	        br.close();
@@ -659,10 +626,16 @@ public class Frame extends JFrame implements KeyListener
 			// loade player position
 			
 			// loade all enheter
-			for (int i = 0;i<map.getNrOfEnheter(); i++)
-			{
+//			for (int i = 0;i<map.getNrOfEnheter(); i++)
+//			{
+//				
+//			}
+			
+			for (Enhet newEnehet : map.getEnhet()) {
+				System.out.println(newEnehet.getDamage());
 				
 			}
+			
 	}
 	
 	public void updateCam( Map map, Enhet player)

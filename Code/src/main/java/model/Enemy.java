@@ -8,17 +8,19 @@ public class Enemy extends Enhet
 {
 	public Enemy(){
 		super();
-		setImage(Objekt.Enemy);
+		
 	}
 	
 	public Enemy(Point position)
 	{
 		super(position, 5);
+		
 	}
 	
 	public Enemy(Point position, int damage)
 	{
 		super(position, damage);
+		
 	}
 
 	@Override

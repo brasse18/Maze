@@ -18,21 +18,31 @@ public class Map
 	private Dimension blockSize = new Dimension(80, 80);
 	public Enhet enhet;
 	
-	public Map()
-	{
-		makeNewMap();
-	}
+//	public Map()
+//	{
+//		makeNewMap();
+//	}
 	
 	public Map(int inMap[][],Vector2d inBody,Point pleyerPos)
 	{
+
 		setMap(inMap, inBody, pleyerPos);
+		
 	}
 	
 	public void setMap(int inMap[][],Vector2d inBody,Point pleyerPos)
 	{
+		enheter.clear();
+		System.out.println(enheter.size());
+		enheter.add(new Enemy(new Point(6, 6), 10));
+		System.out.println(enheter.size());
+		
+		
+		
 		body = inBody;
 		map = new MapObjekt[body.size.width][body.size.height];
 		player.setPosition(pleyerPos);
+		
 		for (int y = 0;y<body.size.height;y++)
 		{
 			for (int x = 0;x<body.size.width;x++)
@@ -58,6 +68,14 @@ public class Map
 				}
 		  }
 		enheter = null;
+	}
+	
+	public Enemy[] getEnhet()
+	{
+		System.out.println(enheter.size());
+		
+		return (Enemy[]) enheter.toArray();
+		
 	}
 	
 	
@@ -150,15 +168,19 @@ public class Map
 	
 	public void addEnhet(Enhet enhet)
 	{
-		if (enhet.getClass() != Players.class)
-		{
-			enheter.add(enhet);
-			map[enhet.getPosition().x][enhet.getPosition().y].addEnhet(enhet);
-		}
+		//System.out.println(enhet.getInfoToString());
+		
+		enheter.add(enhet);
+//		if (enhet.getClass() != Players.class)
+//		{
+//			enheter.add(enhet);
+//			map[enhet.getPosition().x][enhet.getPosition().y].addEnhet(enhet);
+//		}
 	}
 	
 	public int getNrOfEnheter()
 	{
+		System.out.println(enheter.isEmpty());
 		return enheter.size();
 	}
 	
@@ -332,5 +354,7 @@ public class Map
 		}
 		return status;
 	}
+	
+
 
 }
