@@ -74,9 +74,12 @@ public class Frame extends JFrame implements KeyListener
 	private Image imageEnemyArmerBrutal;
 	private Image imageHealthPoison;
 	
+	private Image[] imageArr = new Image[12];
+	
 	private Game game;
 	
 	private Music musik = new Music();
+	
 	
 	private class JForm extends JLabel
 	{

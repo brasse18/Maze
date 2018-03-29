@@ -10,7 +10,7 @@ public class Players extends Enhet
 	public Players(){
 		super();
 		this.setPosition(new Point(1, 1));
-		setImage(Objekt.Player);
+		//setImage();
 	}
 
 	@Override

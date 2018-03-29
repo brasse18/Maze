@@ -9,7 +9,7 @@ public class Mpc extends Enhet
 
 	public Mpc(){
 		super();
-		setImage(Objekt.Enemy);
+		//setImage(Objekt.Enemy);
 	}
 	
 	public Mpc(Point position)
