@@ -39,6 +39,12 @@ public class Item extends Form
 		// TODO implement me
 		return false;
 	}
+	
+	public String toString()
+	{
+		return "";
+		
+	}
 
 }
 

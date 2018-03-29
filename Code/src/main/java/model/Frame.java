@@ -35,9 +35,6 @@ import sun.audio.AudioStream;
 public class Frame extends JFrame implements KeyListener
 {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	//menyerna f��r spelet skapas h��r
@@ -83,9 +80,6 @@ public class Frame extends JFrame implements KeyListener
 	
 	private class JForm extends JLabel
 	{
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 		private String id;
 		private Point position;
@@ -117,9 +111,6 @@ public class Frame extends JFrame implements KeyListener
 	
 	private class JItem extends JForm
 	{
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 		
 		
@@ -181,8 +172,6 @@ public class Frame extends JFrame implements KeyListener
 			setSize(enhet.getSize().width*blockSize.width, enhet.getSize().height*blockSize.height);
 		}
 	}
-	
-	
 	
 	private class JMapObjekt extends JForm
 	{
@@ -283,19 +272,36 @@ public class Frame extends JFrame implements KeyListener
 	{
 		Map map = game.gameRound.map;
 		String outString = "";
-		outString = String.valueOf(map.getBody().getSize().getHeight()) + ":" + String.valueOf(map.getBody().getSize().getWidth()) + "\n";
-		outString += map.toString();
 		
-		//outString = map.getPlayer().getPosition().x + ":" + map.getPlayer().getPosition().y + ":";
+		outString = map.getPlayer().getPosition().x + ":" + map.getPlayer().getPosition().y;
+		outString += "\n";
+		outString += map.getPlayer().item.size();
+		outString += "\n";
 		
-		try(  PrintWriter out = new PrintWriter( "map.save" )  ){
+		for (int i = 0; i < map.getPlayer().item.size(); i++) {
+			if (map.getPlayer().item.get(i).getClass() == HealthPoison.class)
+			{
+				outString += map.getPlayer().item.get(i).toString();
+			} else if (map.getPlayer().item.get(i).getClass() == Weapon.class) {
+				outString += map.getPlayer().item.get(i).toString();
+			}
+			outString += "\n";
+		}
+		
+		try(  PrintWriter out = new PrintWriter( "game.save" )  ){
 		    out.println(outString);
 		}
 	}
 	
 	public void load(int mapNr, String modMap) throws IOException
 	{
-//		Map map = game.gameRound.map;
+		Map map = game.gameRound.map;
+		
+		
+		
+		map.loadeFromFile(modMap, mapNr);
+		
+		
 //		BufferedReader br = new BufferedReader(new FileReader("map.txt"));
 //	    try {
 //	        StringBuilder sb = new StringBuilder();
@@ -312,116 +318,116 @@ public class Frame extends JFrame implements KeyListener
 //	    } finally {
 //	        br.close();
 //	    }
-		
-		
-		Map map = game.gameRound.map;
-		int newMap[][] = new int[5][5];
-		int newX = 0;
-		int newY = 0;
-		InputStreamReader mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map1.map"));
-		FileInputStream fstream;
-		DataInputStream in;;
-		if (mapNr == 0)
-		{
-			fstream = new FileInputStream(modMap);
-			in = new DataInputStream(fstream);
-			mapFile = new InputStreamReader(in);
-		}
-		else if (mapNr == 1)
-		{
-			mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map1.map"));
-		}
-		else if (mapNr == 2)
-		{
-			mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map2.map"));
-		}
-		else if (mapNr == 3)
-		{
-			mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map3.map"));
-		}
-		else if (mapNr == 4)
-		{
-			mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map4.map"));
-		}
-		
-		BufferedReader br = new BufferedReader(mapFile);
-		
-		
-	    try {
-	        //StringBuilder sb = new StringBuilder();
-	        String line = br.readLine();
-	        String[] size = line.toString().split(":");
-	        newX = Integer.parseInt(size[0]);
-	        newY = Integer.parseInt(size[1]);
-	        Point playerPoint = new Point(2,2);
-	        System.out.println(newX + " " + newY);
-	        newMap = new int[newX][newY];
-	        //line = br.readLine();
-//	        int yCount = 0;
-//	        while (line != null) {
-//	            sb.append(line);
-//	            String[] arrayX = line.toString().split(":");
-//	            for (int i = 0;i<newX;i++)
-//	            {
-//	            	newMap[i][yCount] = Integer.parseInt(arrayX[i]);
-//	            }
-//	            yCount++;
-//	            line = br.readLine();
-//	        }
-	        
-	        // loade map from file
-	        for (int y = 0;y<newY;y++)
-	        {
-	        	line = br.readLine();
-	        	String[] arrayX = line.toString().split(":");
-		        for (int x = 0;x<newX;x++)
-		        {
-		        	newMap[x][y] = Integer.parseInt(arrayX[x]);
-		        	System.out.print(newMap[x][y]);
-		        }
-		        System.out.println("");
-	        }
-	        
-	        // loade position for player from file
-	        line = br.readLine();
-	        String[] player = line.toString().split(":");
-	        System.out.println("Player pos: X:" + player[0] + " Y:" + player[1]);
-	        playerPoint = new Point(Integer.parseInt(player[0]),Integer.parseInt(player[1]));
-	        map.getPlayer().setPosition(playerPoint);
-	        
-	        // seting the new map
-	        game.gameRound.loadMap(newMap, new Vector2d(0, 0, newX, newY), playerPoint);
-	        
-	        // loade enheter from file
-//	        line = br.readLine();
-//	        int nrOfEnheter = Integer.parseInt(line.toString());
-//	        for (int i = 0; i < nrOfEnheter; i++) {
+//		
+//		
+//		Map map = game.gameRound.map;
+//		int newMap[][] = new int[5][5];
+//		int newX = 0;
+//		int newY = 0;
+//		InputStreamReader mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map1.map"));
+//		FileInputStream fstream;
+//		DataInputStream in;;
+//		if (mapNr == 0)
+//		{
+//			fstream = new FileInputStream(modMap);
+//			in = new DataInputStream(fstream);
+//			mapFile = new InputStreamReader(in);
+//		}
+//		else if (mapNr == 1)
+//		{
+//			mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map1.map"));
+//		}
+//		else if (mapNr == 2)
+//		{
+//			mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map2.map"));
+//		}
+//		else if (mapNr == 3)
+//		{
+//			mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map3.map"));
+//		}
+//		else if (mapNr == 4)
+//		{
+//			mapFile = new InputStreamReader(this.getClass().getResourceAsStream("/map/map4.map"));
+//		}
+//		
+//		BufferedReader br = new BufferedReader(mapFile);
+//		
+//		
+//	    try {
+//	        //StringBuilder sb = new StringBuilder();
+//	        String line = br.readLine();
+//	        String[] size = line.toString().split(":");
+//	        newX = Integer.parseInt(size[0]);
+//	        newY = Integer.parseInt(size[1]);
+//	        Point playerPoint = new Point(2,2);
+//	        System.out.println(newX + " " + newY);
+//	        newMap = new int[newX][newY];
+//	        //line = br.readLine();
+////	        int yCount = 0;
+////	        while (line != null) {
+////	            sb.append(line);
+////	            String[] arrayX = line.toString().split(":");
+////	            for (int i = 0;i<newX;i++)
+////	            {
+////	            	newMap[i][yCount] = Integer.parseInt(arrayX[i]);
+////	            }
+////	            yCount++;
+////	            line = br.readLine();
+////	        }
+//	        
+//	        // loade map from file
+//	        for (int y = 0;y<newY;y++)
+//	        {
 //	        	line = br.readLine();
-//		        String[] enhet = line.toString().split(":");
-//		        
-//		        switch (Integer.parseInt(enhet[2])) {
-//				case 1:
-//					System.out.println(enhet[0] + " " + enhet[1] + " " + enhet[3]);
-//					map.addEnhet(new Enemy(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), Integer.parseInt(enhet[3])));
-//					break;
-//					
-//				case 0:
-//					System.out.println(enhet[0] + " " + enhet[1] + " " + enhet[3]);
-//					map.addEnhet(new Mpc(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), Integer.parseInt(enhet[3])));
-//					break;
-//
-//				default:
-//					break;
-//				}
-//			}
-	        
-	    } finally {
-	        br.close();
-	    }
-		
+//	        	String[] arrayX = line.toString().split(":");
+//		        for (int x = 0;x<newX;x++)
+//		        {
+//		        	newMap[x][y] = Integer.parseInt(arrayX[x]);
+//		        	System.out.print(newMap[x][y]);
+//		        }
+//		        System.out.println("");
+//	        }
+//	        
+//	        // loade position for player from file
+//	        line = br.readLine();
+//	        String[] player = line.toString().split(":");
+//	        System.out.println("Player pos: X:" + player[0] + " Y:" + player[1]);
+//	        playerPoint = new Point(Integer.parseInt(player[0]),Integer.parseInt(player[1]));
+//	        map.getPlayer().setPosition(playerPoint);
+//	        
+//	        // seting the new map
+//	        game.gameRound.loadMap(newMap, new Vector2d(0, 0, newX, newY), playerPoint);
+//	        
+//	        // loade enheter from file
+////	        line = br.readLine();
+////	        int nrOfEnheter = Integer.parseInt(line.toString());
+////	        for (int i = 0; i < nrOfEnheter; i++) {
+////	        	line = br.readLine();
+////		        String[] enhet = line.toString().split(":");
+////		        
+////		        switch (Integer.parseInt(enhet[2])) {
+////				case 1:
+////					System.out.println(enhet[0] + " " + enhet[1] + " " + enhet[3]);
+////					map.addEnhet(new Enemy(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), Integer.parseInt(enhet[3])));
+////					break;
+////					
+////				case 0:
+////					System.out.println(enhet[0] + " " + enhet[1] + " " + enhet[3]);
+////					map.addEnhet(new Mpc(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), Integer.parseInt(enhet[3])));
+////					break;
+////
+////				default:
+////					break;
+////				}
+////			}
+//	        
+//	    } finally {
+//	        br.close();
+//	    }
+//		
 		loadGame();
 		updatePlayer(panelGame);
-		updateCam(map, game.gameRound.map.getPlayer());
+		updateCam(map, map.getPlayer());
 	}
 
 	public Frame(String name){
@@ -635,7 +641,8 @@ public class Frame extends JFrame implements KeyListener
 //			}
 			
 			for (Enhet newEnehet : map.getEnhet()) {
-				System.out.println(newEnehet.getDamage());
+				GUIEnhet = new JEnhet(newEnehet);
+				panelGame.add(GUIEnhet);
 				
 			}
 			
