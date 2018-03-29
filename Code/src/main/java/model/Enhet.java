@@ -1,7 +1,10 @@
 package model;
 
+import java.awt.Image;
 import java.awt.Point;
 import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
 
 import model.Form;
 
@@ -11,6 +14,7 @@ public abstract class Enhet extends Form
 	private int movementSpeed;
 	private int damage;
 	private boolean dead = false;
+	private Image imageDead;
 	private Item aktiveWeapon = null;
 	public ArrayList<Item> item = new ArrayList<Item>();
 	
@@ -36,6 +40,21 @@ public abstract class Enhet extends Form
 		healthPoint = 100;
 		movementSpeed = 1;
 		this.damage = damage;
+	}
+	
+	public Enhet(Point position, int damage, Image image, Image imageDead){
+		super();
+		setPosition(position);
+		healthPoint = 100;
+		movementSpeed = 1;
+		this.damage = damage;
+		setImage(image);
+		this.imageDead = imageDead;
+	}
+	
+	public void setImageDead(Image imageDead)
+	{
+		this.imageDead = imageDead;
 	}
 	
 	public void move(Direction direction)
@@ -81,6 +100,7 @@ public abstract class Enhet extends Form
 		{
 			healthPoint = healthPoint - damage;
 		}
+		updateGrafic();
 		System.out.println(damage + " damage was taken " + getHealthPoint() + " HP left");
 	}
 
@@ -125,6 +145,7 @@ public abstract class Enhet extends Form
 				i = item.size()+1;
 			}
 		}
+		updateGrafic();
 		return out;
 	}
 	
@@ -132,6 +153,7 @@ public abstract class Enhet extends Form
 	{
 		healthPoint += health;
 		System.out.println("Got" + health + " helth now have " + getHealthPoint() + " Helth");
+		updateGrafic();
 	}
 	
 	public void addItem(Item item)
@@ -142,6 +164,18 @@ public abstract class Enhet extends Form
 	public void setAktiveWeapon(Weapon weapon)
 	{
 		aktiveWeapon = weapon;
+	}
+	
+	public void updateGrafic()
+	{
+		if (isDead())
+		{
+			getJLabel().setText("DEAD");
+			getJLabel().setIcon(new ImageIcon(imageDead));
+		} else
+		{
+			getJLabel().setText("HP: " + getHealthPoint());
+		}
 	}
 	
 	public abstract boolean isFriendly(Enhet enhet);

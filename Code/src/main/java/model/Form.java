@@ -4,6 +4,7 @@ import model.Vector2d;
 import model.Objekt;
 
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Point;
 
 import javax.swing.ImageIcon;
@@ -13,12 +14,17 @@ public class Form
 {
 	
 	private Vector2d body = new Vector2d(0,0,1,1);
-	private String image;
 	private JLabel label;
 	
-	public void setImage(String image)
+	public void setImage(Image image)
 	{
 		label.setIcon(new ImageIcon(image));
+	}
+	
+	public JLabel getJLabel()
+	{
+		return this.label;
+		
 	}
 	
 	public Point getPosition()
@@ -44,6 +50,13 @@ public class Form
 	
 	public Form(){
 		super();
+		
+	}
+	
+	public Form(Image image, Image imageDead)
+	{
+		setImage(image);
+		
 	}
 
 }

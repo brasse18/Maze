@@ -16,7 +16,7 @@ import model.GameStatus;
 public class Game
 {
 
-	public GameRound gameRound = new GameRound();
+	public GameRound gameRound;
 	private GameStatus gameStatus = GameStatus.Stop;
 	
 	private BufferedImage bufferWall;
@@ -43,6 +43,7 @@ public class Game
 
 	public Game(){
 		super();
+		
 	}
 	
 	public void loadeAllImages()
@@ -83,6 +84,15 @@ public class Game
 			imageEnemyArmerHevy = bufferEnhet.getSubimage(160*1, 136*2, 160, 136).getScaledInstance(blockSize.width-10, blockSize.height-10, Image.SCALE_SMOOTH);
 			imageEnemyArmerBrutal = bufferEnhet.getSubimage(160*1, 136*0, 160, 136).getScaledInstance(blockSize.width-10, blockSize.height-10, Image.SCALE_SMOOTH);
 			
+			imageEnheterArr = new Image[8];
+			imageEnheterArr[0] = imagePlayer;
+			imageEnheterArr[1] = imageEnemy;
+			imageEnheterArr[2] = imageMpc;
+			imageEnheterArr[3] = imageDead;
+			imageEnheterArr[4] = imageEnemyArmerLite;
+			imageEnheterArr[5] = imageEnemyArmerMedium;
+			imageEnheterArr[6] = imageEnemyArmerHevy;
+			imageEnheterArr[7] = imageEnemyArmerBrutal;
 			
 			
 		} catch (IOException e) {
@@ -95,18 +105,23 @@ public class Game
 		
 		String outMap = "";
 		MapObjekt mapObjekt;
-		Map map = gameRound.map;
 		
-		
-		if (map.getPlayer().getPosition() == new Point(1, 1))
+		if (gameRound != null)
 		{
-			System.out.print("gg");
-		}
-		
-		    outMap = map.toString();
-			try(  PrintWriter out = new PrintWriter( "map.save" )  ){
-			    out.println(outMap);
+			
+			Map map = gameRound.map;
+			
+			
+			if (map.getPlayer().getPosition() == new Point(1, 1))
+			{
+				System.out.print("gg");
 			}
+			
+			    outMap = map.toString();
+				try(  PrintWriter out = new PrintWriter( "map.save" )  ){
+				    out.println(outMap);
+				}
+		}
 			
 	}
 
@@ -115,6 +130,10 @@ public class Game
 	}
 
 	public void startGame() {
+		if (gameRound != null)
+		{
+			gameRound = new GameRound(imageItemArr, imageEnheterArr, imageMappArr);
+		}
 		gameStatus = GameStatus.Runing;
 	}
 

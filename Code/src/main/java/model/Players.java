@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Image;
 import java.awt.Point;
 
 import model.Enhet;
@@ -11,6 +12,13 @@ public class Players extends Enhet
 		super();
 		this.setPosition(new Point(1, 1));
 		//setImage();
+	}
+	
+	public Players(Point position, Image image, Image imageDead){
+		super();
+		this.setPosition(position);
+		setImage(image);
+		setImageDead(imageDead);
 	}
 
 	@Override

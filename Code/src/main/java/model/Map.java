@@ -1,5 +1,6 @@
 package model;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -24,6 +25,10 @@ public class Map
 	private Dimension blockSize = new Dimension(80, 80);
 	public Enhet enhet;
 	
+	private Image[] imageItemArr;
+	private Image[] imageEnheterArr;
+	private Image[] imageMappArr;
+	
 	public Map()
 	{
 		makeNewMap();
@@ -33,6 +38,22 @@ public class Map
 	{
 
 		setMap(inMap, inBody, pleyerPos);
+		
+	}
+	
+	public Map(int inMap[][],Vector2d inBody,Point pleyerPos, Image[] imageItemArr, Image[] imageEnheterArr, Image[] imageMappArr)
+	{
+		// most loade image arr befor seting new map
+		setImageArr(imageItemArr, imageEnheterArr, imageMappArr);
+		setMap(inMap, inBody, pleyerPos);
+		
+	}
+	
+	public void setImageArr(Image[] imageItemArr, Image[] imageEnheterArr, Image[] imageMappArr)
+	{
+		this.imageItemArr = imageItemArr;
+		this.imageEnheterArr = imageEnheterArr;
+		this.imageMappArr = imageMappArr;
 		
 	}
 	
@@ -169,7 +190,7 @@ public class Map
 		
 		body = inBody;
 		map = new MapObjekt[body.size.width][body.size.height];
-		player.setPosition(pleyerPos);
+		player = new Players(pleyerPos, imageEnheterArr[0], imageEnheterArr[3]);
 		
 		for (int y = 0;y<body.size.height;y++)
 		{

@@ -604,7 +604,12 @@ public class Frame extends JFrame implements KeyListener
 			JEnhet GUIPlayer = new JEnhet(player);
 			JEnhet GUIEnhet;
 			JItem GUIItem;
-			panelGame.add(GUIPlayer);
+			
+			
+			//panelGame.add(GUIPlayer);
+			panelGame.add(player.getJLabel());
+			
+			
 			JMapObjekt mapBlock;
 			mapBlock = new JMapObjekt(game.gameRound.map.getGoal());
 			panelGame.add(mapBlock);
@@ -694,27 +699,34 @@ public class Frame extends JFrame implements KeyListener
 	public void updatePlayer(JPanel panel)
 	{
 		Enhet player = game.gameRound.map.getPlayer();
-		Dimension blockSize = game.gameRound.map.getBlockSize();
+		//Dimension blockSize = game.gameRound.map.getBlockSize();
 		int healthPoisonNr = 0;
-		for (int i = 0;i<panel.getComponents().length;i++)
-		{
-			if (panel.getComponent(i).getClass() == JEnhet.class)
-			{
-				JEnhet temp = (JEnhet) panel.getComponent(i);
-				if (temp.getId() == "Player")
-				{
-					temp.setLocation(blockSize.width*player.getPosition().x, blockSize.height*player.getPosition().y);
-					if (player.isDead())
-					{
-						temp.setIcon(new ImageIcon(imageDead));
-						temp.setText("DEAD");
-					} else
-					{
-						temp.setText("HP: " + player.getHealthPoint());
-					}
-				}
-			}
-		}
+		
+		
+		
+		
+		
+		
+		
+//		for (int i = 0;i<panel.getComponents().length;i++)
+//		{
+//			if (panel.getComponent(i).getClass() == JEnhet.class)
+//			{
+//				JEnhet temp = (JEnhet) panel.getComponent(i);
+//				if (temp.getId() == "Player")
+//				{
+//					temp.setLocation(blockSize.width*player.getPosition().x, blockSize.height*player.getPosition().y);
+//					if (player.isDead())
+//					{
+//						temp.setIcon(new ImageIcon(imageDead));
+//						temp.setText("DEAD");
+//					} else
+//					{
+//						temp.setText("HP: " + player.getHealthPoint());
+//					}
+//				}
+//			}
+//		}
 		
 		for (int i = 0;i<player.item.size();i++)
 		{

@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Image;
 import java.awt.Point;
 
 import model.Map;
@@ -8,9 +9,13 @@ public class GameRound
 {
 
 	public Map map = new Map(new Vector2d(0, 0, 20, 10));
+	private Image[] imageItemArr;
+	private Image[] imageEnheterArr;
+	private Image[] imageMappArr;
 	
-	public GameRound(){
+	public GameRound(Image[] imageItemArr, Image[] imageEnheterArr, Image[] imageMappArr){
 		super();
+		map.setImageArr(imageItemArr, imageEnheterArr, imageMappArr);
 		
 	}
 	
