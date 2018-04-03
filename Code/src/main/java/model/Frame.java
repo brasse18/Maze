@@ -430,7 +430,7 @@ public class Frame extends JFrame implements KeyListener
 		updateCam(map, map.getPlayer());
 	}
 
-	public Frame(String name){
+	public Frame(String name) throws IOException{
 		super();
 		this.game = new Game();
 		loadImageBuffer();
@@ -447,7 +447,7 @@ public class Frame extends JFrame implements KeyListener
 	
 	private void loadImageBuffer()
 	{
-		Dimension blockSize = game.gameRound.map.getBlockSize();
+		Dimension blockSize = new Dimension(80, 80);
 		try {
 			bufferWall = ImageIO.read(Frame.class.getResourceAsStream("/image/wall.png"));
 			bufferGround = ImageIO.read(Frame.class.getResourceAsStream("/image/ground.jpg"));
@@ -541,6 +541,11 @@ public class Frame extends JFrame implements KeyListener
 	
 	public void startGame() throws IOException
 	{
+		if (game == null)
+		{
+			game = new Game();
+		}
+		
 		if (game.getStatus() == GameStatus.Pause)
 		{
 			game.startGame();
@@ -548,7 +553,8 @@ public class Frame extends JFrame implements KeyListener
 		else if (game.getStatus() == GameStatus.Stop)
 		{
 			//game.gameRound.map.makeNewMap();
-			load(1,"");
+			//load(1,"");
+			//panelFrame.add(game.gameRound.map.getPlayer().getJLabel());
 			loadGame();
 			loadeGameHud();
 			updateCam(game.gameRound.map, game.gameRound.map.getPlayer());
@@ -599,44 +605,60 @@ public class Frame extends JFrame implements KeyListener
 	{
 		Enhet player = game.gameRound.map.getPlayer();
 		Map map = game.gameRound.map;
-		panelGame.removeAll();
+		//panelGame.removeAll();
 		panelGame.setSize(map.getBlockSize().width*map.getBody().size.width, map.getBlockSize().height*map.getBody().size.height);
-			JEnhet GUIPlayer = new JEnhet(player);
-			JEnhet GUIEnhet;
-			JItem GUIItem;
+			//JEnhet GUIPlayer = new JEnhet(player);
+			//JEnhet GUIEnhet;
+			//JItem GUIItem;
 			
 			
 			//panelGame.add(GUIPlayer);
-			panelGame.add(player.getJLabel());
+//			panelGame.add(player.getJLabel());
+//			
+//			Enhet[] enheterArr = game.gameRound.map.getEnhet();
+//			
+//			for (int i = 0; i < enheterArr.length; i++) {
+//				panelGame.add(enheterArr[i].getJLabel());
+//			}
+//			
+//			
+//			for (int y = 0; y < game.gameRound.map.getBody().size.getHeight(); y++) {
+//				for (int x = 0; x < game.gameRound.map.getBody().size.getWidth(); x++) {
+//					panelGame.add(game.gameRound.map.getMapBlock(new Point(x, y)).getJLabel());
+//				}
+//			}
+			
+
 			
 			
-			JMapObjekt mapBlock;
-			mapBlock = new JMapObjekt(game.gameRound.map.getGoal());
-			panelGame.add(mapBlock);
-			for (int y = 0;y<game.gameRound.map.getBody().size.height;y++)
-			{
-				for (int x = 0;x<game.gameRound.map.getBody().size.width;x++)
-				{
-					mapBlock = new JMapObjekt(game.gameRound.map.getMap()[x][y]);
-					if (game.gameRound.map.getMap()[x][y].getNrOfEnheter() != 0)
-					{
-						for (int i = 0;i<game.gameRound.map.getMap()[x][y].getNrOfEnheter();i++)
-						{
-							GUIEnhet = new JEnhet(game.gameRound.map.getMap()[x][y].getEnhetAt(i));
-							panelGame.add(GUIEnhet);
-						}
-					}
-					if (game.gameRound.map.getMap()[x][y].getNrOfItems() != 0)
-					{
-						for (int i = 0;i<game.gameRound.map.getMap()[x][y].getNrOfItems();i++)
-						{
-							GUIItem = new JItem(game.gameRound.map.getMap()[x][y].getItemAt(i));
-							panelGame.add(GUIItem);
-						}
-					}
-					panelGame.add(mapBlock);
-				}
-			}
+			
+//			JMapObjekt mapBlock;
+//			mapBlock = new JMapObjekt(game.gameRound.map.getGoal());
+//			panelGame.add(mapBlock);
+//			for (int y = 0;y<game.gameRound.map.getBody().size.height;y++)
+//			{
+//				for (int x = 0;x<game.gameRound.map.getBody().size.width;x++)
+//				{
+//					mapBlock = new JMapObjekt(game.gameRound.map.getMap()[x][y]);
+//					if (game.gameRound.map.getMap()[x][y].getNrOfEnheter() != 0)
+//					{
+//						for (int i = 0;i<game.gameRound.map.getMap()[x][y].getNrOfEnheter();i++)
+//						{
+//							GUIEnhet = new JEnhet(game.gameRound.map.getMap()[x][y].getEnhetAt(i));
+//							panelGame.add(GUIEnhet);
+//						}
+//					}
+//					if (game.gameRound.map.getMap()[x][y].getNrOfItems() != 0)
+//					{
+//						for (int i = 0;i<game.gameRound.map.getMap()[x][y].getNrOfItems();i++)
+//						{
+//							GUIItem = new JItem(game.gameRound.map.getMap()[x][y].getItemAt(i));
+//							panelGame.add(GUIItem);
+//						}
+//					}
+//					panelGame.add(mapBlock);
+//				}
+//			}
 			// loade player position
 			
 			// loade all enheter
@@ -645,11 +667,11 @@ public class Frame extends JFrame implements KeyListener
 //				
 //			}
 			
-			for (Enhet newEnehet : map.getEnhet()) {
-				GUIEnhet = new JEnhet(newEnehet);
-				panelGame.add(GUIEnhet);
+			//for (Enhet newEnehet : map.getEnhet()) {
+			//	GUIEnhet = new JEnhet(newEnehet);
+			//	panelGame.add(GUIEnhet);
 				
-			}
+			//}
 			
 	}
 	
@@ -658,51 +680,90 @@ public class Frame extends JFrame implements KeyListener
 		panelGame.setLocation(map.getBlockSize().width*4-map.getBlockSize().width*player.getPosition().x,map.getBlockSize().width*4-map.getBlockSize().width*player.getPosition().y);
 	}
 	
-	public void updateGui(JPanel panel, String name, Point position)
+	public void updateGui(JPanel panel)
 	{
-		Map map = game.gameRound.map;
-		for (int i = 0;i<panel.getComponents().length;i++)
-		{
-			if (panel.getComponent(i).getClass() == JForm.class || panel.getComponent(i).getClass() == JEnhet.class || panel.getComponent(i).getClass() == JItem.class)
-			{
-				JForm temp = (JForm) panel.getComponent(i);
-				if (temp.getId() == name)
-				{
-					if (position.x == temp.getPosition().x && position.y == temp.getPosition().y)
-					{
-						if (panel.getComponent(i).getClass() == JItem.class)
-						{
-							if (map.getMap()[temp.getPosition().x][temp.getPosition().y].getNrOfItems() == 0)
-							{
-								panel.remove(i);
-							}
-						} else if (panel.getComponent(i).getClass() == JEnhet.class) {
-							JEnhet tempEnhet = (JEnhet) panel.getComponent(i);
-							Enhet enhet = map.getMap()[position.x][position.y].getEnhetAt(0);
-							Dimension blockSize = game.gameRound.map.getBlockSize();
-							tempEnhet.setLocation(blockSize.width*enhet.getPosition().x, blockSize.height*enhet.getPosition().y);
-							if (enhet.isDead())
-							{
-								tempEnhet.setIcon(new ImageIcon(imageDead));
-								tempEnhet.setText("DEAD");
-							} else
-							{
-								tempEnhet.setText("HP: " + enhet.getHealthPoint());
-							}
-						}
-					}
-				}
+		
+		panelGame.add(game.gameRound.map.getPlayer().getJLabel());
+		
+		Enhet[] enheterArr = game.gameRound.map.getEnhet();
+		
+		for (int i = 0; i < enheterArr.length; i++) {
+			panelGame.add(enheterArr[i].getJLabel());
+		}
+		
+		for (int y = 0; y < game.gameRound.map.getBody().size.getHeight(); y++) {
+			for (int x = 0; x < game.gameRound.map.getBody().size.getWidth(); x++) {
+				panelGame.add(game.gameRound.map.getMapBlock(new Point(x, y)).getJLabel());
 			}
 		}
+		
+
+		
+		
+		
+//		Map map = game.gameRound.map;
+//		for (int i = 0;i<panel.getComponents().length;i++)
+//		{
+//			if (panel.getComponent(i).getClass() == JForm.class || panel.getComponent(i).getClass() == JEnhet.class || panel.getComponent(i).getClass() == JItem.class)
+//			{
+//				JForm temp = (JForm) panel.getComponent(i);
+//				if (temp.getId() == name)
+//				{
+//					if (position.x == temp.getPosition().x && position.y == temp.getPosition().y)
+//					{
+//						if (panel.getComponent(i).getClass() == JItem.class)
+//						{
+//							if (map.getMap()[temp.getPosition().x][temp.getPosition().y].getNrOfItems() == 0)
+//							{
+//								panel.remove(i);
+//							}
+//						} else if (panel.getComponent(i).getClass() == JEnhet.class) {
+//							JEnhet tempEnhet = (JEnhet) panel.getComponent(i);
+//							Enhet enhet = map.getMap()[position.x][position.y].getEnhetAt(0);
+//							Dimension blockSize = game.gameRound.map.getBlockSize();
+//							tempEnhet.setLocation(blockSize.width*enhet.getPosition().x, blockSize.height*enhet.getPosition().y);
+//							if (enhet.isDead())
+//							{
+//								tempEnhet.setIcon(new ImageIcon(imageDead));
+//								tempEnhet.setText("DEAD");
+//							} else
+//							{
+//								tempEnhet.setText("HP: " + enhet.getHealthPoint());
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+		
+		
 	}
 	
 	public void updatePlayer(JPanel panel)
 	{
 		Enhet player = game.gameRound.map.getPlayer();
 		//Dimension blockSize = game.gameRound.map.getBlockSize();
-		int healthPoisonNr = 0;
+		//int healthPoisonNr = 0;
+		
+		//loadGame();
+		
+		//player.getJLabel().setLocation(player.getPosition().x*80, player.getPosition().y*80);
+		panelGame.add(player.getJLabel());
 		
 		
+		Enhet[] enheterArr = game.gameRound.map.getEnhet();
+		
+		for (int i = 0; i < enheterArr.length; i++) {
+			panelGame.add(enheterArr[i].getJLabel());
+		}
+		
+		for (int y = 0; y < game.gameRound.map.getBody().size.getHeight(); y++) {
+			for (int x = 0; x < game.gameRound.map.getBody().size.getWidth(); x++) {
+				panelGame.add(game.gameRound.map.getMapBlock(new Point(x, y)).getJLabel());
+			}
+		}
+		
+
 		
 		
 		
@@ -728,25 +789,28 @@ public class Frame extends JFrame implements KeyListener
 //			}
 //		}
 		
-		for (int i = 0;i<player.item.size();i++)
-		{
-			if (player.item.get(i).getClass() == HealthPoison.class)
-			{
-				healthPoisonNr++;
-			}
-		}
+		//for (int i = 0;i<player.item.size();i++)
+		//{
+		//	if (player.item.get(i).getClass() == HealthPoison.class)
+		//	{
+		//		healthPoisonNr++;
+		//	}
+		//}
 		
-		for (int i = 0;i<panelGameHud.getComponents().length;i++)
-		{
-			if (panelGameHud.getComponent(i).getClass() == JForm.class)
-			{
-				JForm temp = (JForm) panelGameHud.getComponent(i);
-				if (temp.getId() == "HudHealthPoisons")
-				{
-					temp.setText(healthPoisonNr + "X");
-				}
-			}
-		}
+		//for (int i = 0;i<panelGameHud.getComponents().length;i++)
+		//{
+		//	if (panelGameHud.getComponent(i).getClass() == JForm.class)
+		//	{
+		//		JForm temp = (JForm) panelGameHud.getComponent(i);
+		//		if (temp.getId() == "HudHealthPoisons")
+		//		{
+		//			temp.setText(healthPoisonNr + "X");
+		//		}
+		//	}
+		//}
+		
+		
+		
 	}
 	
 	public void gameOver()
@@ -762,7 +826,7 @@ public class Frame extends JFrame implements KeyListener
 		game.pauseGame();
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Frame gui = new Frame("Maze");
 		gui.setVisible(true);
 		
@@ -836,7 +900,7 @@ public class Frame extends JFrame implements KeyListener
 	    switch (status) {
 		case pickUp:
 		{
-			updateGui(panelGame, "Item", player.getPosition());
+			updateGui(panelGame);
 			
 		}
 		case goal:
@@ -888,7 +952,8 @@ public class Frame extends JFrame implements KeyListener
 				break;
 			}
 			
-			updatePlayer(panelGame);
+			updateGui(panelGame);
+			//updatePlayer(panelGame);
 			updateCam(map, player);
 			//panelGame.setLocation(map.getBlockSize().width*4-map.getBlockSize().width*player.getPosition().x,map.getBlockSize().width*4-map.getBlockSize().width*player.getPosition().y);
 			
@@ -926,7 +991,7 @@ public class Frame extends JFrame implements KeyListener
 		case Fight:
 		{
 			System.out.println("Cant move Left you attackt a enemy");
-			updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
+			updateGui(panelGame);
 			updatePlayer(panelGame);
 		}
 			break;
@@ -934,7 +999,7 @@ public class Frame extends JFrame implements KeyListener
 		{
 			System.out.println("You are Dead");
 			updatePlayer(panelGame);
-			updateGui(panelGame, "Enemy", map.getNextStep(player, direction));
+			updateGui(panelGame);
 			gameOver();
 		}
 			break;
@@ -942,6 +1007,7 @@ public class Frame extends JFrame implements KeyListener
 		default:
 			break;
 		}
+	    panelGame.repaint();
 	}
 
 	@Override

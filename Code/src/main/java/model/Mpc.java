@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Image;
 import java.awt.Point;
 
 import model.Enhet;
@@ -7,8 +8,8 @@ import model.Enhet;
 public class Mpc extends Enhet
 {
 
-	public Mpc(){
-		super();
+	public Mpc(Point point, int damage, Image imageEnheterArr, Image imageEnheterArr2){
+		super(point, damage, imageEnheterArr, imageEnheterArr2);
 		//setImage(Objekt.Enemy);
 	}
 	

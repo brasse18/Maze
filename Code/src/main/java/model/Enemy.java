@@ -1,13 +1,14 @@
 package model;
 
+import java.awt.Image;
 import java.awt.Point;
 
 import model.Enhet;
 
 public class Enemy extends Enhet
 {
-	public Enemy(){
-		super();
+	public Enemy(Point position, int damage, Image imageEnheterArr, Image imageEnheterArr2){
+		super(position, damage, imageEnheterArr, imageEnheterArr2);
 		
 	}
 	

@@ -41,11 +41,13 @@ public class Map
 		
 	}
 	
-	public Map(int inMap[][],Vector2d inBody,Point pleyerPos, Image[] imageItemArr, Image[] imageEnheterArr, Image[] imageMappArr)
+	public Map(Image[] imageItemArr, Image[] imageEnheterArr, Image[] imageMappArr) throws IOException
 	{
 		// most loade image arr befor seting new map
 		setImageArr(imageItemArr, imageEnheterArr, imageMappArr);
-		setMap(inMap, inBody, pleyerPos);
+		player.setImage(imageEnheterArr[0]);
+		player.setImageDead(imageEnheterArr[3]);
+		loadeFromFile("ff", 1);
 		
 	}
 	
@@ -119,6 +121,7 @@ public class Map
 	        String[] player = line.toString().split(":");
 	        //System.out.println("Player pos: X:" + player[0] + " Y:" + player[1]);
 	        
+	        
 	        newPlayerPoint = new Point(Integer.parseInt(player[0]),Integer.parseInt(player[1]));
 	        
 	        // loading in new map
@@ -135,12 +138,12 @@ public class Map
 		        switch (Integer.parseInt(enhet[2])) {
 				case 1:
 					//System.out.println(enhet[0] + " " + enhet[1] + " " + enhet[3]);
-					addEnhet(new Enemy(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), Integer.parseInt(enhet[3])));
+					addEnhet(new Enemy(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), Integer.parseInt(enhet[3]), imageEnheterArr[4], imageEnheterArr[3]));
 					break;
 					
 				case 0:
 					//System.out.println(enhet[0] + " " + enhet[1] + " " + enhet[3]);
-					addEnhet(new Mpc(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), Integer.parseInt(enhet[3])));
+					addEnhet(new Mpc(new Point(Integer.parseInt(enhet[0]), Integer.parseInt(enhet[1])), Integer.parseInt(enhet[3]), imageEnheterArr[4], imageEnheterArr[3]));
 					break;
 
 				default:
@@ -182,9 +185,9 @@ public class Map
 	public void setMap(int inMap[][],Vector2d inBody,Point pleyerPos)
 	{
 		enheter.clear();
-		System.out.println(enheter.size());
+		//System.out.println(enheter.size());
 		enheter.add(new Enemy(new Point(6, 6), 10));
-		System.out.println(enheter.size());
+		//System.out.println(enheter.size());
 		
 		
 		
@@ -201,11 +204,13 @@ public class Map
 				case 0:
 				{
 					map[x][y] = new Ground(new Point(x, y));
+					map[x][y].setImage(imageMappArr[1]);
 				}
 				break;
 				case 1:
 				{
 					map[x][y] = new Wall(new Point(x, y));
+					map[x][y].setImage(imageMappArr[2]);
 				}
 				break;
 				case 2:
@@ -232,6 +237,10 @@ public class Map
 		
 	}
 	
+	public MapObjekt getMapBlock(Point point)
+	{
+		return map[point.x][point.y]; 
+	}
 	
 	public void makeNewMap()
 	{

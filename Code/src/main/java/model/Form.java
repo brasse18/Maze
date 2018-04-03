@@ -13,12 +13,14 @@ import javax.swing.JLabel;
 public class Form
 {
 	
-	private Vector2d body = new Vector2d(0,0,1,1);
-	private JLabel label;
+	private Vector2d body = new Vector2d(80,80,1,1);
+	private JLabel label = new JLabel("dddddd");
 	
 	public void setImage(Image image)
 	{
 		label.setIcon(new ImageIcon(image));
+		label.setSize(80, 80);
+		label.setLocation(body.position.x*80, body.position.y*80);
 	}
 	
 	public JLabel getJLabel()
@@ -35,7 +37,8 @@ public class Form
 	public void setPosition(Point position)
 	{
 		this.body.position = position;
-		this.label.setLocation(getSize().width*getPosition().x, getSize().height*getPosition().y);
+		label.setLocation(body.position.x*80, body.position.y*80);
+		label.repaint();
 	}
 	
 	public Dimension getSize()
@@ -50,13 +53,13 @@ public class Form
 	
 	public Form(){
 		super();
-		
+		label.setVisible(true);
 	}
 	
 	public Form(Image image, Image imageDead)
 	{
 		setImage(image);
-		
+		label.setVisible(true);
 	}
 
 }

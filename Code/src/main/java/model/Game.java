@@ -41,14 +41,17 @@ public class Game
 	private Image[] imageEnheterArr;
 	private Image[] imageMappArr;
 
-	public Game(){
+	public Game() throws IOException{
 		super();
+		
+		loadeAllImages();
+		gameRound = new GameRound(imageItemArr, imageEnheterArr, imageMappArr);
 		
 	}
 	
 	public void loadeAllImages()
 	{
-		Dimension blockSize = gameRound.map.getBlockSize();
+		Dimension blockSize = new Dimension(80, 80);
 		try {
 			bufferWall = ImageIO.read(Frame.class.getResourceAsStream("/image/wall.png"));
 			bufferGround = ImageIO.read(Frame.class.getResourceAsStream("/image/ground.jpg"));
@@ -129,7 +132,7 @@ public class Game
 		
 	}
 
-	public void startGame() {
+	public void startGame() throws IOException {
 		if (gameRound != null)
 		{
 			gameRound = new GameRound(imageItemArr, imageEnheterArr, imageMappArr);
